@@ -3,7 +3,6 @@ const router = require('koa-router')({
 })
 
 const config = require('../../config/config')
-console.log(config.JWT_SECRET)
 
 const AdminUser = require('../../models/AdminUser')
 
