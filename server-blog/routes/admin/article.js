@@ -92,7 +92,24 @@ router.put('/article/:id', async ctx => {
 // 查
 router.get('/article', async ctx => {
   try {
-    const data = await Article.find().populate('tags')
+    // 文章总数
+    const total = await Article.countDocuments()
+    const reqParam = ctx.query
+    const title = reqParam.title
+    const page = Number(reqParam.page) // 当前第几页
+    const size = Number(reqParam.size) // 每页显示的记录条数
+    // 显示符合前端分页请求的列表查询
+    // const reg = new RegExp(title, 'i')
+    const data = await Article.find()
+      .$where({ title })
+      .populate('tags')
+      .sort({ updated: -1 })
+      .skip((page - 1) * size)
+      .limit(size)
+
+    //是否还有更多
+    const hasMore = total - (page - 1) * size > size ? true : false
+    ctx.response.type = 'application/json'
     // const tag1 = await Tag.findOne({ tag_name: 'Vuejs' })
     // const tag2 = await Tag.findOne({ tag_name: 'Reactjs' })
     // const tag3 = await Tag.findOne({ tag_name: 'Nodejs' })
@@ -110,6 +127,8 @@ router.get('/article', async ctx => {
       code: 200,
       msg: '文章查询成功',
       data,
+      hasMore,
+      total,
     }
   } catch (error) {
     ctx.response.status = 412
