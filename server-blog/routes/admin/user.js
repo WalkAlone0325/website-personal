@@ -2,6 +2,9 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const config = require('../../config/config')
+console.log(config.JWT_SECRET)
+
 const AdminUser = require('../../models/AdminUser')
 
 // 增
@@ -118,8 +121,7 @@ router.post('/login', async ctx => {
       if (isVaild) {
         // 获取 token
         const jwt = require('jsonwebtoken')
-        let JWT_SECRET = 'loner6660325'
-        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, {
+        const token = jwt.sign({ id: user._id, username: user.username }, config.JWT_SECRET, {
           expiresIn: '10h',
         })
         ctx.response.status = 200

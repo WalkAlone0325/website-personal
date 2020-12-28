@@ -6,7 +6,7 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const cors = require('koa-cors')
-require('./db/config')(app)
+require('./config/db')(app)
 
 // error handler
 onerror(app)
