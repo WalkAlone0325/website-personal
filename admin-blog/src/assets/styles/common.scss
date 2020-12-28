@@ -1,0 +1,33 @@
+.dc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearfix {
+  clear: both;
+  overflow: hidden;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+.pagebox {
+  .pagebox-search {
+    padding: 15px 15px 0 15px;
+    border-bottom: 5px solid #f0f3f4;
+  }
+
+  .pagebox-content {
+    padding: 15px 15px 0 15px;
+  }
+
+  .pagebox-pagination {
+    padding: 15px;
+  }
+}
