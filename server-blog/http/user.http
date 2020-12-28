@@ -1,0 +1,34 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/admin
+
+###
+POST {{uri}}/admin
+Content-Type: application/json
+
+{
+  "username": "loner",
+  "password": "123456"
+}
+
+###
+PUT {{uri}}/admin/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "username": "Reactjs",
+  "password": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/admin/5fe9756ef8c16a2f34e1c62f
+
+### 
+POST {{uri}}/login
+Content-Type: application/json
+
+{
+  "username": "loner",
+  "password": "123456"
+}
