@@ -1,0 +1,25 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/tag
+
+###
+POST {{uri}}/tag
+Content-Type: application/json
+
+{
+  "tag_name": "Vuejs",
+  "tag_desc": "vuejs文章"
+}
+
+###
+PUT {{uri}}/tag/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "tag_name": "Reactjs",
+  "tag_desc": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/tag/5fe96af83c199f1f787e51a5
