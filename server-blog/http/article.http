@@ -1,0 +1,20 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/article
+
+###
+POST {{uri}}/article
+Content-Type: application/json
+
+{
+  "title": "第三篇文章",
+  "avator": "loner",
+  "img_url":"xxxxxxx",
+  "desc":"第三篇文章",
+  "status": 1,
+  "content": "第二篇文章的内容"
+}
+
+###
+DELETE {{uri}}/article/5fe96af83c199f1f787e51a5

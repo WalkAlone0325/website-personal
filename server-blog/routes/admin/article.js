@@ -3,6 +3,7 @@ const router = require('koa-router')({
 })
 
 const Article = require('../../models/Article')
+const Tag = require('../../models/Tag')
 
 // 增
 router.post('/article', async (ctx, next) => {
@@ -92,6 +93,18 @@ router.put('/article/:id', async ctx => {
 router.get('/article', async ctx => {
   try {
     const data = await Article.find().populate('tags')
+    // const tag1 = await Tag.findOne({ tag_name: 'Vuejs' })
+    // const tag2 = await Tag.findOne({ tag_name: 'Reactjs' })
+    // const tag3 = await Tag.findOne({ tag_name: 'Nodejs' })
+    // const a1 = await Article.findOne({ title: 'Vuejs' })
+    // const a2 = await Article.findOne({ title: '第二篇文章' })
+    // const a3 = await Article.findOne({ title: '第三篇文章' })
+    // a1.tags = [tag1, tag2]
+    // a2.tags = [tag3]
+    // a3.tags = [tag1, tag3]
+    // await a1.save()
+    // await a2.save()
+    // await a3.save()
     ctx.response.status = 200
     ctx.body = {
       code: 200,
