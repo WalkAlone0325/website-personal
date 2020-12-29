@@ -1,22 +1,22 @@
 <template>
   <div class="myheader">
     <section class="logo" :class="{ minWidth: isCollapse }">
-      <a target="_blank" href="xx" class="logoLink">
-        <img src="./images/logo.png" alt="logo" />
-        <span v-if="!isCollapse">独行的博客</span>
+      <a target="_blank" :href="urlHref" class="logoLink">
+        <img :src="imgLogo" alt="logo" />
+        <span v-if="!isCollapse">{{ adminTitle }}</span>
       </a>
     </section>
     <section class="header-content">
       <section class="collspan dc cursor" @click="collspan">
-        <img src="./images/close.png" alt="logo" v-if="!isCollapse" />
-        <img src="./images/open.png" alt="logo" v-if="isCollapse" />
+        <i class="el-icon-s-unfold" v-if="isCollapse" title="展开"></i>
+        <i class="el-icon-s-fold" v-if="!isCollapse" title="收起"></i>
       </section>
       <div class="bread">
         <BreadCrumb></BreadCrumb>
       </div>
       <!-- 全屏 -->
       <section class="fullscreen cursor dc" @click="toggleFull">
-        <img src="./images/fullscreen.png" alt="logo" />
+        <i class="el-icon-full-screen" title="全屏"></i>
       </section>
       <!-- 右侧菜单 -->
       <section class="cursor dc">
@@ -45,6 +45,7 @@ import screenfull from 'screenfull'
 import { ElMessage } from 'element-plus'
 import BreadCrumb from './BreadCrumb'
 import Utils from '@/utils/utils'
+import setting from '../setting'
 
 export default defineComponent({
   name: 'myheader',
@@ -52,6 +53,7 @@ export default defineComponent({
     const userInfo = ref({})
     const store = useStore()
     const router = useRouter()
+    const { adminTitle, imgLogo, urlHref } = setting
 
     const isCollapse = computed(() => store.getters['app/isCollapse'])
 
@@ -69,7 +71,7 @@ export default defineComponent({
         Utils.delCookie('DEFAULT_TOKEN')
         router.push('/login')
       } else if (index == 2) {
-        window.open('https://www.baidu.com', '_blank')
+        window.open(urlHref, '_blank')
       }
     }
 
@@ -92,6 +94,9 @@ export default defineComponent({
       collspan,
       handleDropLink,
       toggleFull,
+      adminTitle,
+      imgLogo,
+      urlHref,
     }
   },
   components: {
@@ -133,6 +138,7 @@ export default defineComponent({
       margin-right: 8px;
       height: 28px;
       vertical-align: middle;
+      border-radius: 50%;
     }
   }
   .header-content {
@@ -141,8 +147,9 @@ export default defineComponent({
     padding: 0 20px;
     align-items: center;
     .collspan {
-      img {
-        display: block;
+      i {
+        font-size: 20px;
+        color: #333;
       }
     }
     .bread {
@@ -153,8 +160,9 @@ export default defineComponent({
     }
     .fullscreen {
       margin-right: 30px;
-      img {
-        display: block;
+      i {
+        font-size: 20px;
+        color: #333;
       }
     }
   }
