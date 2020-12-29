@@ -69,12 +69,12 @@
       </el-table-column>
       <el-table-column sortable prop="created" label="创建时间" width="100">
         <template #default="scope">
-          <span>{{ scope.row.created }}</span>
+          <span>{{ timeFormat(scope.row.created) }}</span>
         </template>
       </el-table-column>
       <el-table-column sortable prop="updated" label="更新时间" width="100">
         <template #default="scope">
-          <span>{{ scope.row.updated }}</span>
+          <span>{{ timeFormat(scope.row.updated) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150" fixed="right">
@@ -109,7 +109,7 @@
 
 <script>
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { defineComponent, onMounted, reactive, ref, toRef, toRefs } from 'vue'
+import { defineComponent, inject, onMounted, reactive, ref, toRef, toRefs } from 'vue'
 import { addArticle, delArticle, putArticle, getArticle } from '../../api/article'
 
 export default defineComponent({
@@ -209,6 +209,7 @@ export default defineComponent({
       handleSizeChange,
       handleCurrentChange,
       removeArticle,
+      timeFormat: inject('timeFormat'),
     }
   },
 })

@@ -40,12 +40,12 @@
       <el-table-column prop="numList" label="文章数量"></el-table-column>
       <el-table-column prop="created" label="创建时间">
         <template #default="scope">
-          <span>{{ scope.row.created }}</span>
+          <span>{{ timeFormat(scope.row.created) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="updated" label="更新时间">
         <template #default="scope">
-          <span>{{ scope.row.updated }}</span>
+          <span>{{ timeFormat(scope.row.updated) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150" fixed="right">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, ref, toRefs, inject } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { addTag, delTag, putTag, getTag } from '../../api/tag'
 
@@ -89,6 +89,9 @@ export default defineComponent({
       ],
     })
     const tagFormRef = ref(null)
+
+    // 格式化日期
+    const timeFormat = inject('timeFormat')
 
     onMounted(() => {
       getTagList()
@@ -200,6 +203,7 @@ export default defineComponent({
       createTag,
       updateRow,
       deleteRow,
+      timeFormat,
     }
   },
 })
