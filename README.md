@@ -8,6 +8,9 @@
    - 删除文章- `DELETE '/article/:id'`
    - 修改文章- `PUT '/article/:id'`
    - 查询文章- `GET '/article'`
+     - page
+     - size
+     - title
    - 查询文章详情- `GET '/article/:id'`
 
 2. 标签接口
