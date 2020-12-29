@@ -174,7 +174,20 @@ export default defineComponent({
     const getTagList = async () => {
       const res = await getTag()
       if (res.code === 200) {
-        tagsList.value = res.data
+        const tagsListData = res.data
+        const numList = res.articlenumlist
+        console.log(res)
+        tagsListData.forEach(item => {
+          let temp = numList.find(i => {
+            return i._id === item._id
+          })
+          item.numList = temp == null ? 0 : temp.count
+          // console.log(temp)
+        })
+        res.data = tagsListData.sort((a, b) => {
+          return a.numList < b.numList
+        })
+        tagsList.value = tagsListData
       }
     }
 

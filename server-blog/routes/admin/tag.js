@@ -3,6 +3,7 @@ const router = require('koa-router')({
 })
 
 const Tag = require('../../models/Tag')
+const Article = require('../../models/Article')
 
 // 增
 router.post('/tag', async ctx => {
@@ -93,11 +94,14 @@ router.put('/tag/:id', async ctx => {
 router.get('/tag', async ctx => {
   try {
     const data = await Tag.find()
+    const arr = [{ $unwind: '$tags' }, { $group: { _id: '$tags', count: { $sum: 1 } } }]
+    const articlenumlist = await Article.aggregate(arr)
     ctx.response.status = 200
     ctx.body = {
       code: 200,
       msg: '标签查询成功',
       data,
+      articlenumlist,
     }
   } catch (error) {
     ctx.response.status = 412
