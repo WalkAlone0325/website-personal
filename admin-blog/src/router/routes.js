@@ -26,32 +26,32 @@ export default [
         path: '/dashbord',
         name: 'dashbord',
         component: Dashbord,
-        meta: { title: '首页' },
+        meta: { title: '首页', icon: 'el-icon-menu' },
       },
       {
         path: '/tag',
         name: 'tag',
         component: () => import('../views/Tag/Tag'),
-        meta: { title: '标签' },
+        meta: { title: '标签管理', icon: 'el-icon-collection-tag' },
       },
       {
         path: '/article',
         name: 'article',
         component: BlankLayout,
         redirect: '/article/list',
-        meta: { title: '文章' },
+        meta: { title: '文章管理', icon: 'el-icon-s-management' },
         children: [
           {
             path: '/article/list',
             name: 'articlelist',
             component: () => import('../views/Article/ArticleList'),
-            meta: { title: '文章列表' },
+            meta: { title: '文章列表', icon: 'el-icon-s-order' },
           },
           {
             path: '/article/edit',
             name: 'articleedit',
             component: () => import('../views/Article/ArticleEdit'),
-            meta: { title: '写文章' },
+            meta: { title: '写文章', icon: 'el-icon-circle-plus' },
           },
           {
             path: '/article/edit/:id',

@@ -15,7 +15,7 @@
         <template v-for="(item, index) in routelist">
           <template v-if="!item.children || item.children.length == 0">
             <el-menu-item :index="item.path" :key="index">
-              <i class="el-icon-menu"></i>
+              <i :class="item.meta.icon"></i>
               <span slot="title">{{ item.meta.title }}</span>
             </el-menu-item>
           </template>
@@ -23,14 +23,15 @@
           <template v-if="item.children.length > 0">
             <el-submenu :index="item.path" :key="index">
               <template #title>
-                <i class="el-icon-location"></i>
-                <span slot="title">{{ item.meta.title }}</span>
+                <i :class="item.meta.icon"></i>
+                <span>{{ item.meta.title }}</span>
               </template>
               <el-menu-item
                 v-for="(code, codeindex) in item.children"
                 :key="codeindex"
                 :index="code.path"
               >
+                <i :class="code.meta.icon"></i>
                 {{ code.meta.title }}
               </el-menu-item>
             </el-submenu>
