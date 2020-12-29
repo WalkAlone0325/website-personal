@@ -3,12 +3,16 @@
 </template>
 
 <script>
-export default {
-  name: "Dashbord",
+import { computed, defineComponent, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+
+export default defineComponent({
+  name: 'Dashbord',
+  setup() {
+    return {}
+  },
   components: {},
-  methods: {}
-};
+})
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
     content_info: { type: String },
     avator_imgurl: { type: String },
     icons_list: {
+      // 此处应该在建模
       icon: { type: String },
       desc: { type: String },
       link: { type: String },

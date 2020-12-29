@@ -1,5 +1,6 @@
 import Home from '../views/Home'
 import Dashbord from '../views/Dashbord/Dashbord'
+import BlankLayout from '../layout/BlankLayout'
 
 /**
  * hidden： 是否为blank页面
@@ -28,10 +29,38 @@ export default [
         meta: { title: '首页' },
       },
       {
-        path: 'tag',
+        path: '/tag',
         name: 'tag',
         component: () => import('../views/Tag/Tag'),
         meta: { title: '标签' },
+      },
+      {
+        path: '/article',
+        name: 'article',
+        component: BlankLayout,
+        redirect: '/article/list',
+        meta: { title: '文章' },
+        children: [
+          {
+            path: '/article/list',
+            name: 'articlelist',
+            component: () => import('../views/Article/ArticleList'),
+            meta: { title: '文章列表' },
+          },
+          {
+            path: '/article/edit',
+            name: 'articleedit',
+            component: () => import('../views/Article/ArticleEdit'),
+            meta: { title: '写文章' },
+          },
+          {
+            path: '/article/edit/:id',
+            hidden: true,
+            component: () => import('../views/Article/ArticleEdit.vue'),
+            meta: { title: '编辑文章', icon: 'el-icon-menu' },
+            props: true,
+          },
+        ],
       },
       {
         path: '/table',

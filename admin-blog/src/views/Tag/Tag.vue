@@ -1,27 +1,27 @@
 <template>
   <div class="tagsList-page">
     <h2>标签管理</h2>
-    <el-button style="margin-left: 20px;" type="primary" @click="dialogVisible = true">
+    <el-button style="margin-left: 20px;" type="primary" @click="createTag">
       添加标签
     </el-button>
 
     <!-- dialog对话框 -->
     <el-dialog :title="tagTitle" v-model="dialogVisible" width="30%">
-      <el-form ref="tagFormRef" :rules="rules" :model="tagForm" label-width="80px">
-        <!-- <el-form-item label="标签ID" prop="_id">
+      <el-form ref="tagFormRef" status-icon :rules="rules" :model="tagForm" label-width="100px">
+        <el-form-item label="标签ID" prop="_id">
           <el-input v-model="tagForm._id" disabled></el-input>
-        </el-form-item> -->
-        <el-form-item label="标签名称" prop="tag">
+        </el-form-item>
+        <el-form-item label="标签名称" prop="tag_name">
           <el-input v-model="tagForm.tag_name"></el-input>
         </el-form-item>
-        <el-form-item label="标签描述" prop="desc">
+        <el-form-item label="标签描述" prop="tag_desc">
           <el-input v-model="tagForm.tag_desc"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleTag">提 交</el-button>
+          <el-button type="primary" @click="handleTag()">提 交</el-button>
         </span>
       </template>
     </el-dialog>
@@ -63,89 +63,86 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { addTag, delTag, putTag, getTag } from '../../api/tag'
 
 export default defineComponent({
   setup() {
     // init
     const dialogVisible = ref(false) // 弹窗
     const tagTitle = ref('添加标签')
-    // const updateDialog = ref(false) // 编辑是否显示弹窗
-    const tagsList = ref([
-      {
-        _id: 1,
-        tag_name: 'vuejs',
-        tag_desc: 'vuejs',
-        numList: 1,
-        created: 'xx-xx',
-        updated: '20-11-11',
-      },
-      {
-        _id: 2,
-        tag_name: 'nodejs',
-        tag_desc: 'vuejs',
-        numList: 1,
-        created: 'xx-xx',
-        updated: '20-11-11',
-      },
-      {
-        _id: 3,
-        tag_name: 'reactjs',
-        tag_desc: 'vuejs',
-        numList: 1,
-        created: 'xx-xx',
-        updated: '20-11-11',
-      },
-    ]) // 返回带文章数目的标签列表
+    const tagsList = ref([]) // 返回带文章数目的标签列表
     const tagForm = reactive({
-      _id: '',
+      _id: null,
       tag_name: '',
       tag_desc: '',
     }) // tag表单项
     const rules = reactive({
-      name: [
+      tag_name: [
         { required: true, message: '请输入标签名称', trigger: 'blur' },
-        { min: 2, max: 10, message: '长度在 2 到 10 个字符' },
+        { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+      ],
+      tag_desc: [
+        { required: true, message: '请输入标签描述信息', trigger: 'blur' },
+        { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' },
       ],
     })
     const tagFormRef = ref(null)
 
-    onMounted(() => {})
+    onMounted(() => {
+      getTagList()
+    })
 
     // methods
-    // 重置表单
-    const reset = () => {
-      if (tagFormRef.value) {
-        console.log(tagFormRef.value)
-        tagFormRef.value.resetFields()
-      }
-    }
-
     // 增、改
     const handleTag = () => {
-      console.log(tagForm._id)
-      if (tagForm._id !== '') {
-        // 改
-      } else {
-        // 增
-      }
+      tagFormRef.value.validate(async valid => {
+        if (valid) {
+          console.log(tagForm._id)
+          if (tagForm._id !== null) {
+            // 改
+            const res = await putTag(tagForm._id, tagForm)
+            if (res.code === 200) {
+              ElMessage({
+                type: 'info',
+                message: res.msg,
+              })
+            }
+          } else {
+            // 增
+            const res = await addTag(tagForm)
+            if (res.code === 200) {
+              ElMessage({
+                type: 'success',
+                message: res.msg,
+              })
+            }
+          }
+          // 关闭对话框
+          dialogVisible.value = false
+          // 重新获取标签列表
+          getTagList()
+        }
+      })
     }
-
     // 删
     const deleteRow = ({ _id }) => {
-      console.log(_id)
       ElMessageBox.confirm('此操作将永久删除该标签, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
-        .then(() => {
+        .then(async () => {
           // 发送请求
-          ElMessage({
-            type: 'success',
-            message: '删除成功!',
-          })
+          const res = await delTag(_id)
+          if (res.code === 200) {
+            ElMessage({
+              type: 'success',
+              message: '删除成功!',
+            })
+          }
+          getTagList()
         })
         .catch(() => {
           ElMessage({
@@ -154,19 +151,32 @@ export default defineComponent({
           })
         })
     }
+    // 增打开对话框并重置
+    const createTag = () => {
+      dialogVisible.value = true
+      tagTitle.value = '添加标签'
+      tagForm._id = null
+      tagForm.tag_name = ''
+      tagForm.tag_desc = ''
+    }
     // 改打开对话框并赋值
     const updateRow = row => {
       dialogVisible.value = true
       if (row && row._id) {
         const tagName = row.tag_name
-        tagTitle.value = `编辑标签：${tagName}`
+        tagTitle.value = `编辑标签：${tagName || ''}`
         tagForm._id = row._id
         tagForm.tag_name = tagName
         tagForm.tag_desc = row.tag_desc
       }
     }
     // 查
-    const getTagList = () => {}
+    const getTagList = async () => {
+      const res = await getTag()
+      if (res.code === 200) {
+        tagsList.value = res.data
+      }
+    }
 
     return {
       dialogVisible,
@@ -176,6 +186,7 @@ export default defineComponent({
       rules,
       tagFormRef,
       handleTag,
+      createTag,
       updateRow,
       deleteRow,
     }

@@ -1,0 +1,26 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/diary
+
+###
+POST {{uri}}/diary
+Content-Type: application/json
+
+{
+  "diary_title": "第二篇日记",
+  "diary_content": "第二篇日记内容",
+  "weather": "雨"
+}
+
+###
+PUT {{uri}}/diary/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "diary_name": "Reactjs",
+  "diary_desc": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/diary/5fe96af83c199f1f787e51a5

@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const schema = new mongoose.Schema(
   {
     title: { type: String }, // 标题
-    avatar: { type: String }, // 作者
+    avatar: { type: String, default: '独行' }, // 作者
     tags: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Tag' }], // 分类标签
     img_url: { type: String }, // 图片
     desc: { type: String }, // 描述
