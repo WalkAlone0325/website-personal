@@ -1,31 +1,38 @@
 <template>
-  <div class="articlelist-page">
-    <h2>文章列表</h2>
-    <el-form :inline="true" style="margin-left: 50px">
-      <el-form-item label="标题">
-        <el-input
-          type="text"
-          placeholder="请输入要查询的字段"
-          clearable
-          v-model.trim="searchData.title"
-          style="width:200px"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-        <el-button type="primary" icon="el-icon-setting" @click="resetSearch">重置</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          icon="el-icon-circle-plus"
-          style="margin-left: 20px;"
-          type="primary"
-          @click="$router.replace('/article/edit')"
-        >
-          写文章
-        </el-button>
-      </el-form-item>
-    </el-form>
+  <div class="pagebox">
+    <h3 style="padding: 20px 0 0 20px">文章列表</h3>
+    <div class="pagebox-search">
+      <el-form :inline="true" size="mini">
+        <!-- <el-form-item style="float: right;margin-right:0">
+          <el-button @click="go">打开新的页面</el-button>
+        </el-form-item> -->
+
+        <el-form-item label="标题">
+          <el-input
+            type="text"
+            placeholder="请输入要查询的字段"
+            clearable
+            v-model.trim="searchData.title"
+            style="width:200px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+          <el-button type="primary" icon="el-icon-setting" @click="resetSearch">重置</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            icon="el-icon-circle-plus"
+            style="margin-left: 20px;"
+            type="primary"
+            @click="$router.replace('/article/edit')"
+          >
+            写文章
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-form :inline="true" style="margin-left: 50px"></el-form>
 
     <!-- 表格数据列表 -->
     <el-table :data="articleList" style="margin-top: 20px" v-loading="loading">
