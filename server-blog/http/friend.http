@@ -1,0 +1,27 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/friendlink
+
+###
+POST {{uri}}/friendlink
+Content-Type: application/json
+
+{
+  "blog_name": "工链4",
+  "blog_desc": "工链4",
+  "blog_url":"http://www.baidu.com",
+  "blog_imgurl": "http://www.baidu.com"
+}
+
+###
+PUT {{uri}}/friendlink/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "blog_name": "Reactjs",
+  "blog_desc": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/friendlink/5fe96af83c199f1f787e51a5

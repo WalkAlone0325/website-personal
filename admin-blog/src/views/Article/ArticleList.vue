@@ -153,7 +153,6 @@ export default defineComponent({
     }
     // 获取文章列表
     const getArticleList = async () => {
-      console.log(1)
       loading.value = true
       const res = await getArticle({
         page: pageSetting.page,

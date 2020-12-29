@@ -1,0 +1,27 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/toollink
+
+###
+POST {{uri}}/toollink
+Content-Type: application/json
+
+{
+  "tool_name": "工链4",
+  "tool_desc": "工链4",
+  "tool_url":"http://www.baidu.com",
+  "tool_imgurl": "http://www.baidu.com"
+}
+
+###
+PUT {{uri}}/toollink/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "blog_name": "Reactjs",
+  "blog_desc": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/toollink/5fe96af83c199f1f787e51a5

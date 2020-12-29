@@ -63,6 +63,27 @@ export default [
         ],
       },
       {
+        path: '/link',
+        name: 'link',
+        component: BlankLayout,
+        redirect: '/link/friend',
+        meta: { title: '链接管理', icon: 'el-icon-link' },
+        children: [
+          {
+            path: '/link/friend',
+            name: 'friend',
+            component: () => import('../views/Link/FriendLink.vue'),
+            meta: { title: '友情链接', icon: 'el-icon-s-promotion' },
+          },
+          {
+            path: '/link/tool',
+            name: 'tool',
+            component: () => import('../views/Link/ToolLink.vue'),
+            meta: { title: '工具链接', icon: 'el-icon-s-tools' },
+          },
+        ],
+      },
+      {
         path: '/table',
         name: 'table',
         component: () => import('../views/Table/Index.vue'),
