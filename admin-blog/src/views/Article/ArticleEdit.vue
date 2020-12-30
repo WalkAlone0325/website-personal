@@ -1,9 +1,9 @@
 <template>
   <div class="article-edit-page">
+    <h3>写文章</h3>
     <!-- {{ id }} -->
     <el-dialog title="文章设置" v-model="dialogFormVisible" width="40%">
       <el-form
-        class="article-form"
         :model="articleForm"
         :rules="rules"
         ref="articleFormDialogRef"
@@ -65,7 +65,7 @@
         </span>
       </template>
     </el-dialog>
-    <el-form class="article-form" :model="articleForm" size="mini">
+    <el-form :model="articleForm" size="mini">
       <el-form-item class="button-group">
         <el-button type="primary" @click="updateArticle">立即上传</el-button>
         <el-upload
@@ -307,8 +307,10 @@ export default defineComponent({
 .article-edit-page {
   width: 94%;
   margin: 0 auto;
-  .article-form {
-    padding-top: 20px;
+  h3 {
+    padding: 20px 0 10px 20px;
+    // padding: 15px 15px 0 15px;
+    border-bottom: 1px solid #ddd;
   }
 }
 .avatar-uploader .el-upload {
