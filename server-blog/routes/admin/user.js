@@ -3,11 +3,13 @@ const router = require('koa-router')({
 })
 
 const config = require('../../config/config')
+const jwt = require('jsonwebtoken')
+const auth = require('../../middleware/auth')
 
 const AdminUser = require('../../models/AdminUser')
 
 // 增
-router.post('/admin', async ctx => {
+router.post('/admin', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       const { email, username, password } = ctx.request.body
@@ -44,7 +46,7 @@ router.post('/admin', async ctx => {
 })
 
 // 删
-router.delete('/admin/:id', async ctx => {
+router.delete('/admin/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await AdminUser.findByIdAndDelete(ctx.params.id)
@@ -70,7 +72,7 @@ router.delete('/admin/:id', async ctx => {
 })
 
 // 改
-router.put('/admin/:id', async ctx => {
+router.put('/admin/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await AdminUser.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -98,7 +100,7 @@ router.put('/admin/:id', async ctx => {
 })
 
 // 查
-router.get('/admin', async ctx => {
+router.get('/admin', auth(), async ctx => {
   try {
     const data = await AdminUser.find()
     ctx.response.status = 200
@@ -126,7 +128,6 @@ router.post('/login', async ctx => {
       const isVaild = require('bcryptjs').compareSync(password, user.password)
       if (isVaild) {
         // 获取 token
-        const jwt = require('jsonwebtoken')
         const token = jwt.sign({ id: user._id, email: user.email }, config.JWT_SECRET, {
           expiresIn: '10h',
         })

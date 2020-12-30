@@ -2,11 +2,12 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const Article = require('../../models/Article')
 const Tag = require('../../models/Tag')
 
 // 增
-router.post('/article', async (ctx, next) => {
+router.post('/article', auth(), async (ctx, next) => {
   if (ctx.request.body) {
     try {
       const data = await new Article(ctx.request.body).save()
@@ -34,7 +35,7 @@ router.post('/article', async (ctx, next) => {
 })
 
 // 删
-router.delete('/article/:id', async ctx => {
+router.delete('/article/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Article.findByIdAndDelete(ctx.params.id)
@@ -62,7 +63,7 @@ router.delete('/article/:id', async ctx => {
 })
 
 // 改
-router.put('/article/:id', async ctx => {
+router.put('/article/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await Article.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -90,7 +91,7 @@ router.put('/article/:id', async ctx => {
 })
 
 // 查
-router.get('/article', async ctx => {
+router.get('/article', auth(), async ctx => {
   try {
     // 文章总数
     const total = await Article.countDocuments()
@@ -133,7 +134,7 @@ router.get('/article', async ctx => {
 })
 
 // 查询详情
-router.get('/article/:id', async ctx => {
+router.get('/article/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Article.findById(ctx.params.id)

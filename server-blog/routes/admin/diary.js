@@ -2,10 +2,11 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const Diary = require('../../models/Diary')
 
 // 增
-router.post('/diary', async ctx => {
+router.post('/diary', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       const data = await new Diary(ctx.request.body).save()
@@ -33,7 +34,7 @@ router.post('/diary', async ctx => {
 })
 
 // 删
-router.delete('/diary/:id', async ctx => {
+router.delete('/diary/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Diary.findByIdAndDelete(ctx.params.id)
@@ -61,7 +62,7 @@ router.delete('/diary/:id', async ctx => {
 })
 
 // 改
-router.put('/diary/:id', async ctx => {
+router.put('/diary/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await Diary.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -89,7 +90,7 @@ router.put('/diary/:id', async ctx => {
 })
 
 // 查
-router.get('/diary', async ctx => {
+router.get('/diary', auth(), async ctx => {
   try {
     const data = await Diary.find()
     ctx.response.status = 200

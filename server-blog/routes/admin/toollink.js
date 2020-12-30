@@ -2,10 +2,11 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const Toollink = require('../../models/Toollink')
 
 // 增
-router.post('/toollink', async ctx => {
+router.post('/toollink', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       const data = await new Toollink(ctx.request.body).save()
@@ -33,7 +34,7 @@ router.post('/toollink', async ctx => {
 })
 
 // 删
-router.delete('/toollink/:id', async ctx => {
+router.delete('/toollink/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Toollink.findByIdAndDelete(ctx.params.id)
@@ -61,7 +62,7 @@ router.delete('/toollink/:id', async ctx => {
 })
 
 // 改
-router.put('/toollink/:id', async ctx => {
+router.put('/toollink/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await Toollink.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -89,7 +90,7 @@ router.put('/toollink/:id', async ctx => {
 })
 
 // 查
-router.get('/toollink', async ctx => {
+router.get('/toollink', auth(), async ctx => {
   try {
     const data = await Toollink.find()
     ctx.response.status = 200

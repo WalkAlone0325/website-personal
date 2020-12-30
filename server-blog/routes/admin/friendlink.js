@@ -2,10 +2,11 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const Friendlink = require('../../models/Friendlink')
 
 // 增
-router.post('/friendlink', async ctx => {
+router.post('/friendlink', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       const data = await new Friendlink(ctx.request.body).save()
@@ -33,7 +34,7 @@ router.post('/friendlink', async ctx => {
 })
 
 // 删
-router.delete('/friendlink/:id', async ctx => {
+router.delete('/friendlink/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Friendlink.findByIdAndDelete(ctx.params.id)
@@ -61,7 +62,7 @@ router.delete('/friendlink/:id', async ctx => {
 })
 
 // 改
-router.put('/friendlink/:id', async ctx => {
+router.put('/friendlink/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await Friendlink.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -89,7 +90,7 @@ router.put('/friendlink/:id', async ctx => {
 })
 
 // 查
-router.get('/friendlink', async ctx => {
+router.get('/friendlink', auth(), async ctx => {
   try {
     const data = await Friendlink.find()
     ctx.response.status = 200

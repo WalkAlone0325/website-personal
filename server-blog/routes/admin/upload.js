@@ -2,6 +2,7 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const multer = require('koa-multer')
 // 配置
 const storage = multer.diskStorage({
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
 // 加载配置
 const upload = multer({ storage })
 
-router.post('/upload', upload.single('file'), async ctx => {
+router.post('/upload', auth(), upload.single('file'), async ctx => {
   ctx.body = {
     code: 200,
     msg: '图片上传成功',

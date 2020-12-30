@@ -2,11 +2,12 @@ const router = require('koa-router')({
   prefix: '/admin/api',
 })
 
+const auth = require('../../middleware/auth')
 const Tag = require('../../models/Tag')
 const Article = require('../../models/Article')
 
 // 增
-router.post('/tag', async ctx => {
+router.post('/tag', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       const data = await new Tag(ctx.request.body).save()
@@ -34,7 +35,7 @@ router.post('/tag', async ctx => {
 })
 
 // 删
-router.delete('/tag/:id', async ctx => {
+router.delete('/tag/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await Tag.findByIdAndDelete(ctx.params.id)
@@ -62,7 +63,7 @@ router.delete('/tag/:id', async ctx => {
 })
 
 // 改
-router.put('/tag/:id', async ctx => {
+router.put('/tag/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await Tag.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -90,7 +91,7 @@ router.put('/tag/:id', async ctx => {
 })
 
 // 查
-router.get('/tag', async ctx => {
+router.get('/tag', auth(), async ctx => {
   try {
     const data = await Tag.find()
     const arr = [{ $unwind: '$tags' }, { $group: { _id: '$tags', count: { $sum: 1 } } }]
