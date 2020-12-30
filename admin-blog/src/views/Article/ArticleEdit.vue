@@ -1,81 +1,103 @@
 <template>
   <div class="article-edit-page">
     <!-- {{ id }} -->
-    <el-form
-      class="article-form"
-      :model="articleForm"
-      :rules="rules"
-      ref="articleFormRef"
-      label-width="80px"
-    >
-      <el-form-item label="标题" prop="title" required>
-        <el-input v-model="articleForm.title"></el-input>
-      </el-form-item>
-      <el-form-item label="作者" prop="avatar">
-        <el-select v-model="articleForm.avatar" placeholder="请选择作者">
-          <el-option label="独行" value="独行"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="标签" prop="tags" v-if="tagList.length !== 0">
-        <el-select v-model="articleForm.tags" multiple placeholder="请选择文章标签">
-          <el-option
-            v-for="item in tagList"
-            :key="item._id"
-            :label="item.tag_name"
-            :value="item._id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
+    <el-dialog title="文章设置" v-model="dialogFormVisible" width="40%">
+      <el-form
+        class="article-form"
+        :model="articleForm"
+        :rules="rules"
+        ref="articleFormDialogRef"
+        label-width="80px"
+        size="mini"
+      >
+        <el-form-item label="标题" prop="title" required>
+          <el-input v-model="articleForm.title"></el-input>
+        </el-form-item>
+        <el-form-item label="作者" prop="avatar">
+          <el-select v-model="articleForm.avatar" placeholder="请选择作者">
+            <el-option label="独行" value="独行"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="标签" prop="tags" v-if="tagList.length !== 0">
+          <el-select v-model="articleForm.tags" multiple placeholder="请选择文章标签">
+            <el-option
+              v-for="item in tagList"
+              :key="item._id"
+              :label="item.tag_name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
 
-      <el-form-item label="封面" prop="img_url">
-        <el-input v-model="articleForm.img_url"></el-input>
-        或
+        <el-form-item label="封面" prop="img_url">
+          <el-input v-model="articleForm.img_url"></el-input>
+          或
+          <el-upload
+            class="avatar-uploader"
+            :action="$axios.defaults.baseURL + '/upload'"
+            :show-file-list="false"
+            :on-success="afterUpload"
+          >
+            <img
+              v-if="articleForm.img_url"
+              :src="articleForm.img_url"
+              alt="图片找不见！"
+              class="avatar"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="简介" prop="desc">
+          <el-input type="textarea" v-model="articleForm.desc"></el-input>
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="articleForm.status" placeholder="请选择状态">
+            <el-option label="草稿" :value="0"></el-option>
+            <el-option label="发表" :value="1"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="handleValidate">保 存</el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <el-form class="article-form" :model="articleForm" size="mini">
+      <el-form-item class="button-group">
+        <el-button type="primary" @click="updateArticle">立即上传</el-button>
         <el-upload
-          class="avatar-uploader"
+          class="upload-demo"
+          style="display: inline-block;"
           :action="$axios.defaults.baseURL + '/upload'"
           :show-file-list="false"
-          :on-success="afterUpload"
+          :on-success="mdUpload"
+          list-type="picture"
         >
-          <img
-            v-if="articleForm.img_url"
-            :src="articleForm.img_url"
-            alt="图片找不见！"
-            class="avatar"
-          />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <el-button type="primary">
+            <i class="el-icon-picture"></i>
+            上传图片
+          </el-button>
         </el-upload>
+        <el-button type="primary" @click="dialogFormVisible = true">
+          文章设置
+        </el-button>
+        <el-button @click="resetForm">重置</el-button>
       </el-form-item>
-
-      <el-form-item label="简介" prop="desc">
-        <el-input type="textarea" v-model="articleForm.desc"></el-input>
-      </el-form-item>
-
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="articleForm.status" placeholder="请选择状态">
-          <el-option label="草稿" :value="0"></el-option>
-          <el-option label="发表" :value="1"></el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="文章内容" prop="content">
-        <!-- <mavon-editor v-model="articleForm.content" ref="md" /> -->
-        <!-- <el-input v-model="articleForm.content"></el-input> -->
+      <el-form-item prop="content">
         <div id="editor">
           <textarea :value="articleForm.content" @input="update"></textarea>
           <div v-html="compiledMarkdown"></div>
         </div>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="updateArticle">立即上传</el-button>
-        <el-button style="margin-left: 200px;" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTag } from '../../api/tag'
 import { getArticle, delArticle, putArticle, addArticle, getArticleItem } from '../../api/article'
@@ -87,6 +109,7 @@ export default defineComponent({
   props: { id: { type: String } },
   setup(props) {
     const tagList = ref([])
+    const dialogFormVisible = ref(false)
     const articleForm = reactive({
       title: '',
       img_url: '',
@@ -110,9 +133,9 @@ export default defineComponent({
         },
       ],
       status: [{ required: true, message: '请选择状态', trigger: 'change' }],
-      content: [{ required: true, message: '请填写文章内容', trigger: 'blur' }],
     })
-    const articleFormRef = ref(null)
+    const articleFormDialogRef = ref(null)
+    const mdImg = ref('')
     const router = useRouter()
 
     const compiledMarkdown = computed(() => {
@@ -125,9 +148,17 @@ export default defineComponent({
       getTagList()
     })
 
+    watch(mdImg, () => {
+      if (mdImg.value !== '') {
+        update()
+      }
+    })
+
     // methods
     const update = debounce(e => {
-      articleForm.content = e.target.value
+      articleForm.content =
+        mdImg.value !== '' ? e.target.value + `![](${mdImg.value})` : e.target.value
+      mdImg.value = ''
     })
     // 获取标签列表
     const getTagList = async () => {
@@ -144,7 +175,15 @@ export default defineComponent({
         type: 'warning',
       })
         .then(() => {
-          articleFormRef.value.resetFields()
+          if (articleFormDialogRef.value) {
+            articleFormDialogRef.value.resetFields()
+          }
+          articleForm.title = ''
+          articleForm.img_url = ''
+          articleForm.avatar = ''
+          articleForm.desc = ''
+          articleForm.content = '# Hello'
+          articleForm.status = null
           articleForm.tags = []
           ElMessage({
             type: 'success',
@@ -158,46 +197,72 @@ export default defineComponent({
           })
         })
     }
+    // 验证表单
+    const handleValidate = () => {
+      if (articleFormDialogRef.value) {
+        articleFormDialogRef.value.validate(valid => {
+          if (valid) {
+            dialogFormVisible.value = false
+          } else {
+            ElMessage({
+              type: 'warning',
+              message: '请正确填写文章设置',
+            })
+            return false
+          }
+        })
+      }
+    }
     // 上传文章
     const updateArticle = () => {
-      articleFormRef.value.validate(valid => {
-        if (valid) {
-          ElMessageBox.confirm(`是否上传文章 “${articleForm.title}“`, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'success',
-          })
-            .then(async () => {
-              console.log(props.id)
-              if (props.id) {
-                const res = await putArticle(props.id, articleForm)
-                if (res.code === 200) {
-                  ElMessage({
-                    type: 'success',
-                    message: '文章修改成功！',
-                  })
-                }
-              } else {
-                const res = await addArticle(articleForm)
-                if (res.code === 200) {
-                  ElMessage({
-                    type: 'success',
-                    message: '文章上传成功!',
-                  })
-                }
-              }
-              router.push('/article/list')
+      if (articleFormDialogRef.value) {
+        articleFormDialogRef.value.validate(valid => {
+          if (valid) {
+            ElMessageBox.confirm(`是否上传文章 “${articleForm.title}“`, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'success',
             })
-            .catch(() => {
-              ElMessage({
-                type: 'info',
-                message: '已取消上传',
+              .then(async () => {
+                if (props.id) {
+                  const res = await putArticle(props.id, articleForm)
+                  if (res.code === 200) {
+                    ElMessage({
+                      type: 'success',
+                      message: '文章修改成功！',
+                    })
+                  }
+                } else {
+                  const res = await addArticle(articleForm)
+                  if (res.code === 200) {
+                    ElMessage({
+                      type: 'success',
+                      message: '文章上传成功!',
+                    })
+                  }
+                }
+                router.push('/article/list')
               })
+              .catch(() => {
+                ElMessage({
+                  type: 'info',
+                  message: '已取消上传',
+                })
+              })
+          } else {
+            ElMessage({
+              type: 'warning',
+              message: '请正确填写文章设置',
             })
-        } else {
-          return false
-        }
-      })
+            return false
+          }
+        })
+      } else {
+        ElMessage({
+          type: 'warning',
+          message: '请填写文章设置',
+        })
+      }
     }
     // 获取文章详情列表
     const getItem = async () => {
@@ -214,17 +279,25 @@ export default defineComponent({
     const afterUpload = res => {
       articleForm.img_url = res.filename
     }
+    // md中图片上传
+    const mdUpload = res => {
+      mdImg.value = res.filename
+      console.log(mdImg.value)
+    }
 
     return {
       tagList,
+      dialogFormVisible,
       articleForm,
       rules,
-      articleFormRef,
+      articleFormDialogRef,
       resetForm,
+      handleValidate,
       updateArticle,
       afterUpload,
       compiledMarkdown,
       update,
+      mdUpload,
     }
   },
 })
@@ -261,9 +334,14 @@ export default defineComponent({
   height: 178px;
   display: block;
 }
+.button-group {
+  .el-button {
+    margin: 0 20px;
+  }
+}
 #editor {
   margin: 0;
-  height: 100%;
+  height: 78vh;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #333;
 }
