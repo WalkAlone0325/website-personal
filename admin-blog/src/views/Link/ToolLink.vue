@@ -47,7 +47,12 @@
     </el-dialog>
 
     <!-- 表格数据列表 -->
-    <el-table :data="toolLinkList" border style="margin: 0 auto; margin-top: 20px">
+    <el-table
+      :data="toolLinkList"
+      v-loading="loading"
+      border
+      style="margin: 0 auto; margin-top: 20px"
+    >
       <el-table-column type="index" width="100" label="#"></el-table-column>
       <el-table-column prop="tool_name" label="工链名称"></el-table-column>
       <el-table-column
@@ -96,6 +101,7 @@ export default defineComponent({
   setup() {
     const dialogVisible = ref(false) // 弹窗
     const toolLinkList = ref([]) // 工链列表
+    const loading = ref(false)
     const toolTitle = ref('添加工链')
     const toolForm = reactive({
       _id: null,
@@ -154,7 +160,6 @@ export default defineComponent({
             }
           } else {
             const res = await addToolLink(toolForm)
-            console.log(res)
             if (res.code === 200) {
               ElMessage({
                 type: 'success',
@@ -218,9 +223,11 @@ export default defineComponent({
     }
     // 获取工链列表
     const getLinkList = async () => {
+      loading.value = true
       const res = await getToolLink()
       if (res.code === 200) {
         toolLinkList.value = res.data
+        loading.value = false
       }
     }
 
@@ -229,6 +236,7 @@ export default defineComponent({
       toolLinkList,
       toolForm,
       rules,
+      loading,
       toolFormRef,
       toolTitle,
       createToollink,

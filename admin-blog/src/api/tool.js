@@ -2,7 +2,6 @@ import request from '../utils/request'
 
 // 增
 export function addToolLink(payload) {
-  console.log(payload)
   return request({
     url: '/toollink',
     method: 'post',

@@ -2,7 +2,6 @@ import request from '../utils/request'
 
 // 增
 export function addFriendLink(payload) {
-  console.log(payload)
   return request({
     url: '/friendlink',
     method: 'post',

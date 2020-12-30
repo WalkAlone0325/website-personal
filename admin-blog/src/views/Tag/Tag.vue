@@ -29,7 +29,12 @@
     </el-dialog>
 
     <!-- 表格数据列表 -->
-    <el-table :data="tagsList" border style="width: 90%; margin: 0 auto; margin-top: 20px">
+    <el-table
+      :data="tagsList"
+      v-loading="loading"
+      border
+      style="width: 90%; margin: 0 auto; margin-top: 20px"
+    >
       <el-table-column type="index" width="100" label="#"></el-table-column>
       <el-table-column prop="tag_name" label="标签名称">
         <template #default="scope">
@@ -73,6 +78,7 @@ export default defineComponent({
   setup() {
     // init
     const dialogVisible = ref(false) // 弹窗
+    const loading = ref(false)
     const tagTitle = ref('添加标签')
     const tagsList = ref([]) // 返回带文章数目的标签列表
     const tagForm = reactive({
@@ -104,7 +110,6 @@ export default defineComponent({
     const handleTag = () => {
       tagFormRef.value.validate(async valid => {
         if (valid) {
-          console.log(tagForm._id)
           if (tagForm._id !== null) {
             // 改
             const res = await putTag(tagForm._id, tagForm)
@@ -177,6 +182,7 @@ export default defineComponent({
     }
     // 查
     const getTagList = async () => {
+      loading.value = true
       const res = await getTag()
       if (res.code === 200) {
         const tagsListData = res.data
@@ -191,6 +197,7 @@ export default defineComponent({
           return a.numList < b.numList
         })
         tagsList.value = tagsListData
+        loading.value = false
       }
     }
 
@@ -200,6 +207,7 @@ export default defineComponent({
       tagsList,
       tagForm,
       rules,
+      loading,
       tagFormRef,
       handleTag,
       createTag,

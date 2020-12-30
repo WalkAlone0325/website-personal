@@ -1,35 +1,35 @@
 import request from '../utils/request'
 
 // 增
-export function addTag(payload) {
+export function addAdmin(payload) {
   return request({
-    url: '/tag',
+    url: '/admin',
     method: 'post',
     data: { ...payload },
   })
 }
 
 // 删
-export function delTag(payload) {
+export function delAdmin(payload) {
   return request({
-    url: `/tag/${payload}`,
+    url: `/admin/${payload}`,
     method: 'delete',
   })
 }
 
 // 改
-export function putTag(_id, payload) {
+export function putAdmin(_id, payload) {
   return request({
-    url: `/tag/${_id}`,
+    url: `/admin/${_id}`,
     method: 'put',
     data: { ...payload },
   })
 }
 
 // 查
-export function getTag() {
+export function getAdmin() {
   return request({
-    url: '/tag',
+    url: '/admin',
     method: 'get',
   })
 }

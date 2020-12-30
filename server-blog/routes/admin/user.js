@@ -114,9 +114,7 @@ router.post('/login', async ctx => {
   if (username && password) {
     try {
       const user = await AdminUser.findOne({ username }).select('+password')
-      console.log(user)
       const isVaild = require('bcryptjs').compareSync(password, user.password)
-      console.log(isVaild)
       if (isVaild) {
         // 获取 token
         const jwt = require('jsonwebtoken')

@@ -84,6 +84,15 @@ export default [
         ],
       },
       {
+        path: '/loginadmin',
+        name: 'loginadmin',
+        component: () => import('../views/Login/LoginAdmin.vue'),
+        meta: {
+          title: '管理员',
+          icon: 'el-icon-s-custom',
+        },
+      },
+      {
         path: '/table',
         name: 'table',
         component: () => import('../views/Table/Index.vue'),

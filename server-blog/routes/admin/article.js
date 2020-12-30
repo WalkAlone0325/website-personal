@@ -95,7 +95,6 @@ router.get('/article', async ctx => {
     // 文章总数
     const total = await Article.countDocuments()
     const reqParam = ctx.query
-    console.log(reqParam)
     const title = reqParam.title
     const page = Number(reqParam.page) // 当前第几页
     const size = Number(reqParam.size) // 每页显示的记录条数

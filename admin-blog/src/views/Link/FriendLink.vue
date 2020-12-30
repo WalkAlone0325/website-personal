@@ -47,7 +47,12 @@
     </el-dialog>
 
     <!-- 表格数据列表 -->
-    <el-table :data="friendLinkList" border style="margin: 0 auto; margin-top: 20px">
+    <el-table
+      :data="friendLinkList"
+      v-loading="loading"
+      border
+      style="margin: 0 auto; margin-top: 20px"
+    >
       <el-table-column type="index" width="100" label="#"></el-table-column>
       <el-table-column prop="blog_name" label="友链名称"></el-table-column>
       <el-table-column
@@ -96,6 +101,7 @@ export default defineComponent({
   setup() {
     const dialogVisible = ref(false) // 弹窗
     const friendLinkList = ref([]) // 友链列表
+    const loading = ref(false)
     const friendTitle = ref('添加友链')
     const friendForm = reactive({
       _id: null,
@@ -154,7 +160,6 @@ export default defineComponent({
             }
           } else {
             const res = await addFriendLink(friendForm)
-            console.log(res)
             if (res.code === 200) {
               ElMessage({
                 type: 'success',
@@ -218,9 +223,11 @@ export default defineComponent({
     }
     // 获取友链列表
     const getLinkList = async () => {
+      loading.value = true
       const res = await getFriendLink()
       if (res.code === 200) {
         friendLinkList.value = res.data
+        loading.value = false
       }
     }
 
@@ -229,6 +236,7 @@ export default defineComponent({
       friendLinkList,
       friendForm,
       rules,
+      loading,
       friendFormRef,
       friendTitle,
       createFriendlink,

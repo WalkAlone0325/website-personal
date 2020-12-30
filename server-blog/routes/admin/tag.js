@@ -9,7 +9,6 @@ const Article = require('../../models/Article')
 router.post('/tag', async ctx => {
   if (ctx.request.body) {
     try {
-      console.log(ctx.request.body)
       const data = await new Tag(ctx.request.body).save()
       ctx.response.status = 200
       ctx.body = {
