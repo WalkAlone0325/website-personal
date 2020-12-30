@@ -30,9 +30,9 @@
       <el-form-item label="封面" prop="img_url">
         <el-input v-model="articleForm.img_url"></el-input>
         或
-        <!-- <el-upload
+        <el-upload
           class="avatar-uploader"
-          :action="$http.defaults.baseURL + '/upload'"
+          :action="$axios.defaults.baseURL + '/upload'"
           :show-file-list="false"
           :on-success="afterUpload"
         >
@@ -43,7 +43,7 @@
             class="avatar"
           />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload> -->
+        </el-upload>
       </el-form-item>
 
       <el-form-item label="简介" prop="desc">
@@ -58,8 +58,12 @@
       </el-form-item>
 
       <el-form-item label="文章内容" prop="content">
-        <!-- <mavon-editor v-model="articleForm.content" ref="md" @imgAdd="imgAdd" /> -->
-        <el-input v-model="articleForm.content"></el-input>
+        <!-- <mavon-editor v-model="articleForm.content" ref="md" /> -->
+        <!-- <el-input v-model="articleForm.content"></el-input> -->
+        <div id="editor">
+          <textarea :value="articleForm.content" @input="update"></textarea>
+          <div v-html="compiledMarkdown"></div>
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -76,6 +80,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTag } from '../../api/tag'
 import { getArticle, delArticle, putArticle, addArticle, getArticleItem } from '../../api/article'
 import { useRouter } from 'vue-router'
+import marked from 'marked'
+import debounce from 'lodash.debounce'
 
 export default defineComponent({
   props: { id: { type: String } },
@@ -86,7 +92,7 @@ export default defineComponent({
       img_url: '',
       avatar: '',
       desc: '',
-      content: '',
+      content: '# Hello',
       status: null,
       tags: [],
     })
@@ -109,6 +115,10 @@ export default defineComponent({
     const articleFormRef = ref(null)
     const router = useRouter()
 
+    const compiledMarkdown = computed(() => {
+      return marked(articleForm.content)
+    })
+
     // onMounted
     onMounted(() => {
       props.id && getItem()
@@ -116,6 +126,9 @@ export default defineComponent({
     })
 
     // methods
+    const update = debounce(e => {
+      articleForm.content = e.target.value
+    })
     // 获取标签列表
     const getTagList = async () => {
       const res = await getTag()
@@ -197,6 +210,10 @@ export default defineComponent({
       articleForm.status = res.data.status
       articleForm.tags = res.data.tags
     }
+    // 图片上传
+    const afterUpload = res => {
+      articleForm.img_url = res.filename
+    }
 
     return {
       tagList,
@@ -205,6 +222,9 @@ export default defineComponent({
       articleFormRef,
       resetForm,
       updateArticle,
+      afterUpload,
+      compiledMarkdown,
+      update,
     }
   },
 })
@@ -240,5 +260,35 @@ export default defineComponent({
   width: 356px;
   height: 178px;
   display: block;
+}
+#editor {
+  margin: 0;
+  height: 100%;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+}
+textarea,
+#editor div {
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+textarea {
+  border: none;
+  border-right: 1px solid #ccc;
+  resize: none;
+  outline: none;
+  background-color: #f6f6f6;
+  font-size: 14px;
+  font-family: 'Monaco', courier, monospace;
+  padding: 20px;
+}
+
+code {
+  color: #f66;
 }
 </style>

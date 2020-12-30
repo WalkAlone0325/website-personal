@@ -10,6 +10,8 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.1-beta.17",
+    "lodash.debounce": "^4.0.8",
+    "marked": "^1.2.7",
     "normalize.css": "^8.0.1",
     "screenfull": "^5.1.0",
     "vue": "^3.0.0",

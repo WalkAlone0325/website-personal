@@ -7,8 +7,11 @@ import ElementPlus from 'element-plus'
 import 'element-plus/lib/theme-chalk/index.css'
 import './assets/styles/common.scss'
 import { timeStampFormat } from './utils/filters'
+import axios from './utils/request'
 
 const app = createApp(App)
+
+app.config.globalProperties.$axios = axios
 
 app
   .provide('timeFormat', timeStampFormat)
