@@ -1,0 +1,26 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/iconlist
+
+###
+POST {{uri}}/iconlist
+Content-Type: application/json
+
+{
+  "icon": "嘎嘎嘎",
+  "name": "ss嘻嘻嘻星星ss",
+  "link": "信息"
+}
+
+###
+PUT {{uri}}/iconlist/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "iconlist_name": "Reactjs",
+  "iconlist_desc": "Reactjs文章"
+}
+
+###
+DELETE {{uri}}/iconlist/5fe96af83c199f1f787e51a5

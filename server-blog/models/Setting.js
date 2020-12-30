@@ -8,19 +8,13 @@ const schema = new mongoose.Schema({
       type: String,
       default: 'https://tse2-mm.cn.bing.net/th/id/OIP.t9c0r_B9qQUV2qPqXgXpfwHaCx?pid=Api&rs=1',
     },
-    title: { type: String },
-    desc: { type: String },
-    img_url: { type: String },
+    title: { type: String, default: '' },
+    desc: { type: String, default: '' },
+    img_url: { type: String, default: '' },
   },
   about: {
-    content_info: { type: String },
-    avator_imgurl: { type: String },
-    icons_list: {
-      // 此处应该在建模
-      icon: { type: String },
-      desc: { type: String },
-      link: { type: String },
-    },
+    content_info: { type: String, default: '' },
+    avator_imgurl: { type: String, default: '' },
   },
 })
 

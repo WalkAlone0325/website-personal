@@ -1,0 +1,24 @@
+@uri=http://localhost:3000/admin/api
+
+###
+GET {{uri}}/setting
+
+###
+POST {{uri}}/setting
+Content-Type: application/json
+
+{
+  
+}
+
+###
+PUT {{uri}}/setting/5fe96af63c199f1f787e51a4
+Content-Type: application/json
+
+{
+  "setting_name": "Reactjs",
+  "setting_desc": "Reactjs文章"
+}
+
+### 
+DELETE {{uri}}/setting/5fec707f9d4feb07d0bccef7

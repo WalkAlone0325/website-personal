@@ -6,6 +6,8 @@ module.exports = app => {
   const user = require('./user')
   const upload = require('./upload')
   const diary = require('./diary')
+  const setting = require('./setting')
+  const iconlist = require('./iconlist')
 
   app.use(article.routes(), article.allowedMethods())
   app.use(tag.routes(), tag.allowedMethods())
@@ -14,4 +16,6 @@ module.exports = app => {
   app.use(user.routes(), user.allowedMethods())
   app.use(upload.routes(), upload.allowedMethods())
   app.use(diary.routes(), diary.allowedMethods())
+  app.use(setting.routes(), setting.allowedMethods())
+  app.use(iconlist.routes(), iconlist.allowedMethods())
 }
