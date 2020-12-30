@@ -5,4 +5,6 @@ module.exports = {
   imgLogo: require('./assets/images/logo.jpg'),
   // urlHref
   urlHref: 'http://www.baidu.com',
+  // loginTitle
+  loginTitle: '独行的博客后台',
 }

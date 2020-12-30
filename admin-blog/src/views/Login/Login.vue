@@ -1,6 +1,6 @@
 <template>
   <div class="login-page bg-img-ani">
-    <h1>欢迎进入博客后台管理</h1>
+    <h1>{{ loginTitle }}</h1>
     <h2>登录</h2>
     <div class="login-form">
       <div class="form-input">
@@ -10,7 +10,7 @@
         <input type="password" placeholder="密码" v-model="formData.password" />
       </div>
       <div class="form-input">
-        <input class="login-btn" type="submit" value="登录" @click="login" />
+        <input class="login-btn" type="submit" value="登录" @click="login" @keyup.enter="login" />
       </div>
     </div>
   </div>
@@ -22,6 +22,7 @@ import { ElNotification, ElMessage } from 'element-plus'
 import { loginAdmin } from '../../api/user'
 import { setToken, setStorage } from '../../utils/auth'
 import { useRouter } from 'vue-router'
+import { loginTitle, urlHref } from '../../setting'
 
 export default defineComponent({
   name: 'Login',
@@ -37,7 +38,7 @@ export default defineComponent({
       ElNotification({
         title: '',
         dangerouslyUseHTMLString: true,
-        message: `我的博客地址：<a href="http://blog.jsw0.top" target="_blank">http://blog.jsw0.top</a>`,
+        message: `我的博客地址：<a href="${urlHref}" target="_blank">${urlHref}</a>`,
         duration: 4000,
       })
     })
@@ -62,7 +63,7 @@ export default defineComponent({
       }
     }
 
-    return { formData, login }
+    return { formData, login, loginTitle }
   },
 })
 </script>
