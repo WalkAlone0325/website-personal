@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { getStorage } from './storage'
+import { getToken } from './auth'
 
 const service = axios.create({
   timeout: 5000,
@@ -10,7 +10,7 @@ const service = axios.create({
 // 请求拦截
 service.interceptors.request.use(
   config => {
-    let token = getStorage('accessToken')
+    let token = getToken()
     if (token) {
       config.headers.Authorization = 'Bearer ' + token
     }
@@ -33,7 +33,7 @@ service.interceptors.response.use(
   err => {
     ElMessage({
       type: 'error',
-      message: err.message,
+      message: '请求失败',
     })
     return Promise.reject(err)
   },
