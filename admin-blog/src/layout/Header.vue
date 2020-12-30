@@ -144,12 +144,16 @@ export default defineComponent({
   .header-content {
     display: flex;
     flex: 1;
-    padding: 0 20px;
+    padding: 0 20px 0 0;
     align-items: center;
     .collspan {
       i {
-        font-size: 20px;
+        font-size: 24px;
         color: #333;
+        padding: 20px;
+        &:hover {
+          background-color: #eee;
+        }
       }
     }
     .bread {
@@ -161,8 +165,12 @@ export default defineComponent({
     .fullscreen {
       margin-right: 30px;
       i {
-        font-size: 20px;
+        font-size: 24px;
         color: #333;
+        padding: 20px;
+        &:hover {
+          background-color: #eee;
+        }
       }
     }
   }
