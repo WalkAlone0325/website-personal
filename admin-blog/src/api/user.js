@@ -33,3 +33,12 @@ export function getAdmin() {
     method: 'get',
   })
 }
+
+// 登录
+export function loginAdmin(payload) {
+  return request({
+    url: '/login',
+    method: 'post',
+    data: { ...payload },
+  })
+}

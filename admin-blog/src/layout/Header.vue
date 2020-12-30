@@ -45,6 +45,7 @@ import screenfull from 'screenfull'
 import { ElMessage } from 'element-plus'
 import BreadCrumb from './BreadCrumb'
 import Utils from '@/utils/utils'
+import { getToken, removeToken, getStorage } from '../utils/auth'
 import setting from '../setting'
 
 export default defineComponent({
@@ -58,9 +59,10 @@ export default defineComponent({
     const isCollapse = computed(() => store.getters['app/isCollapse'])
 
     // 获取用户信息
-    userInfo.value = Utils.getCookie('DEFAULT_TOKEN')
-      ? JSON.parse(Utils.getCookie('DEFAULT_TOKEN'))
-      : {}
+    // userInfo.value = Utils.getCookie('DEFAULT_TOKEN')
+    //   ? JSON.parse(Utils.getCookie('DEFAULT_TOKEN'))
+    //   : {}
+    userInfo.value = getStorage() ? JSON.parse(getStorage()) : {}
 
     function collspan() {
       store.commit('app/updateCollapse', !isCollapse.value)
@@ -68,7 +70,7 @@ export default defineComponent({
 
     function handleDropLink(index) {
       if (index == 1) {
-        Utils.delCookie('DEFAULT_TOKEN')
+        removeToken()
         router.push('/login')
       } else if (index == 2) {
         window.open(urlHref, '_blank')

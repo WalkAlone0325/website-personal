@@ -1,220 +1,130 @@
 <template>
-  <div id="login">
-    <div class="login-content">
-      <div class="login-wrap">
-        <div class="flex-column">
-          <div class="title">欢迎进入XX</div>
-          <div class="subtitle">WELCOME TO SYSTEM</div>
-          <div class="login-box">
-            <div class="ipt">
-              <img class="icon" src="./images/icon-user.png" />
-              <input
-                type="text"
-                v-model="formData.account"
-                placeholder="手机号"
-              />
-            </div>
-            <div class="ipt">
-              <img class="icon" src="./images/icon-lock.png" />
-              <input
-                type="password"
-                v-model="formData.password"
-                placeholder="登录密码"
-              />
-            </div>
-            <div class="subbtn">
-              <el-button
-                type="primary"
-                @click="onSubmit"
-                :loading="!ableToSubmit"
-              >
-                登 录
-              </el-button>
-            </div>
-          </div>
-        </div>
+  <div class="login-page bg-img-ani">
+    <h1>欢迎进入博客后台管理</h1>
+    <h2>登录</h2>
+    <div class="login-form">
+      <div class="form-input">
+        <input type="text" placeholder="邮箱号" v-model="formData.email" />
+      </div>
+      <div class="form-input">
+        <input type="password" placeholder="密码" v-model="formData.password" />
+      </div>
+      <div class="form-input">
+        <input class="login-btn" type="submit" value="登录" @click="login" />
       </div>
     </div>
   </div>
 </template>
+
 <script>
-import Utils from "@/utils/utils";
-export default {
-  name: "Login",
-  data() {
-    return {
-      formData: {
-        account: "admin",
-        password: "123"
-      },
-      ableToSubmit: true,
-      urlQuery: "/"
-    };
-  },
-  created() {
-    this.$notify({
-      title: "",
-      dangerouslyUseHTMLString: true,
-      message: `我的博客地址：<a href="http://www.zhooson.cn" target="blank">http://www.zhooson.cn</>`,
-      duration: 4000
-    });
+import { defineComponent, onMounted, reactive } from 'vue'
+import { ElNotification, ElMessage } from 'element-plus'
+import { loginAdmin } from '../../api/user'
+import { setToken, setStorage } from '../../utils/auth'
+import { useRouter } from 'vue-router'
 
-    // Utils.delCookie("DEFAULT_TOKEN");
-    if (this.$route.query.redirect) {
-      this.urlQuery = this.$route.query.redirect;
-    }
-  },
-  methods: {
-    onSubmit() {
-      const { account, password } = this.formData;
-      if (!account) return this.$message.error("请输入账号");
-      if (!password) return this.$message.error("请输入密码");
+export default defineComponent({
+  name: 'Login',
+  setup() {
+    const formData = reactive({
+      email: '',
+      password: '',
+    })
+    const router = useRouter()
 
-      Utils.setCookie("DEFAULT_TOKEN", JSON.stringify(this.formData), 1);
-      this.$router.push(this.urlQuery);
+    // onMounted
+    onMounted(() => {
+      ElNotification({
+        title: '',
+        dangerouslyUseHTMLString: true,
+        message: `我的博客地址：<a href="http://blog.jsw0.top" target="_blank">http://blog.jsw0.top</a>`,
+        duration: 4000,
+      })
+    })
+
+    // methods
+    const login = async () => {
+      const { email, password } = formData
+      if (!email) return ElMessage.error('请输入邮箱')
+      if (!password) return ElMessage.error('请输入密码')
+      const res = await loginAdmin(formData)
+      if (res.code === 200) {
+        // 存 token
+        setToken(res.token)
+        // 存个人信息
+        setStorage('info', res.data)
+        // console.log(res)
+        router.replace('/')
+        ElMessage({
+          type: 'success',
+          message: '登录成功，欢迎回来！',
+        })
+      }
     }
-  }
-};
+
+    return { formData, login }
+  },
+})
 </script>
+
 <style lang="scss" scoped>
-$color: #171346;
-#login {
-  position: relative;
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100vh;
-  .login-content {
-    width: 100%;
-    height: 100%;
-    background: url('./images/bg.jpg') no-repeat center bottom;
-    background-size: cover;
+  h1 {
+    color: #f1f1f1;
+    margin-top: 50px;
   }
-  .login-wrap {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    display: flex;
-    flex-direction: column;
-    width: 414px;
-    transform: translateX(-50%);
-
-    .flex-column {
-      display: flex;
-      flex: auto;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .title {
-      margin-bottom: 22px;
-      color: $color;
-      text-align: center;
-      text-indent: 3px;
-      letter-spacing: 3px;
-      font-weight: bold;
-      font-size: 30px;
-      line-height: 50px;
-    }
-
-    .subtitle {
+  h2 {
+    width: 120px;
+    height: 110px;
+    line-height: 70px;
+    border-radius: 50%;
+    margin: 0 auto;
+    padding: 0;
+    background: rgb(255, 255, 255);
+    text-align: center;
+    transform: translateY(70px);
+  }
+  .login-form {
+    width: 300px;
+    padding: 30px 40px;
+    background: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+    .form-input {
       position: relative;
-      color: $color;
-      text-align: center;
-      text-indent: 1px;
-      letter-spacing: 1px;
-      font-weight: 600;
-      font-size: 10px;
-
-      &::after {
-        position: absolute;
-        top: 50%;
-        left: 11px;
+      margin: 20px 0;
+      input {
         display: block;
-        width: 78px;
-        height: 1px;
-        background-color: $color;
-        content: '';
+        box-sizing: border-box;
+        height: 40px;
+        padding: 0 10px;
+        margin: 30px 0;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        background: transparent;
+        font-size: 18px;
       }
-
-      &::before {
-        position: absolute;
-        top: 50%;
-        right: 11px;
-        display: block;
-        width: 78px;
-        height: 1px;
-        background-color: $color;
-        content: '';
-      }
-    }
-
-    .login-box {
-      box-sizing: border-box;
-      margin-top: 30px;
-      padding: 34px;
-      height: 386px;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.4);
-
-      .ipt {
-        display: flex;
-        margin-top: 30px;
-        padding: 12px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-
-        .icon {
-          margin: 0 6px;
-          width: 26px;
-          height: 26px;
-        }
-
-        input {
-          flex: auto;
-          margin-right: 15px;
-          padding: 0 20px;
-          border: 0;
-          background: transparent;
-          color: $color;
-          font-size: 18px;
-          line-height: 26px;
-
-          &:focus {
-            outline: 0;
-          }
-
-          &::-webkit-input-placeholder {
-            color: $color;
-          }
-
-          &:-moz-placeholder {
-            color: $color;
-          }
-
-          &:-ms-input-placeholder {
-            color: $color;
-          }
-        }
-      }
-
-      .subbtn {
-        margin-top: 80px;
+      .login-btn {
+        width: 100%;
+        height: 40px;
+        border: none;
+        background: linear-gradient(120deg, #3498db, #8e44ad, #3498db);
+        background-size: 200%;
+        color: #fff;
+        margin-bottom: 10px;
         outline: none;
-        border: 0;
-        .el-button {
-          width: 100%;
-          border: 0;
-          background-color: $color;
-          color: #fff;
-          font-size: 18px;
+        cursor: pointer;
+        transition: 0.5s;
+        &:hover {
+          background-position: right;
         }
       }
-    }
-
-    .copyright {
-      padding-bottom: 45px;
-      color: rgba(230, 255, 253, 0.4);
-      text-align: center;
-      font-size: 12px;
     }
   }
 }

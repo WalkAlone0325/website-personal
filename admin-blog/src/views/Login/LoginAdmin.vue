@@ -1,29 +1,37 @@
 <template>
   <div class="adminlinksList-page">
     <div class="title-content">
-      <h3>账号管理</h3>
+      <h3>用户管理</h3>
       <el-button size="small" type="primary" @click="createToollink">
-        添加账号
+        添加用户
       </el-button>
     </div>
 
-    <!-- 添加账号 -->
+    <!-- 添加用户 -->
     <el-dialog :title="adminTitle" v-model="dialogVisible">
       <el-form ref="adminFormRef" :rules="rules" :model="adminForm" label-width="80px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="adminForm.username"></el-input>
-        </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="adminForm.email"></el-input>
+          <el-input
+            :disabled="isDisabled"
+            v-model="adminForm.email"
+            placeholder="请输入邮箱"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="adminForm.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="adminForm.password"></el-input>
+          <el-input
+            type="password"
+            v-model="adminForm.password"
+            placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleAdmin()">提 交</el-button>
+          <el-button type="primary" @click="handleAdmin">提 交</el-button>
         </span>
       </template>
     </el-dialog>
@@ -36,8 +44,8 @@
       style="margin: 0 auto; margin-top: 20px; width: 90%;"
     >
       <el-table-column type="index" width="100" label="#"></el-table-column>
-      <el-table-column prop="username" label="账号名称"></el-table-column>
-      <el-table-column prop="email" label="账号邮箱"></el-table-column>
+      <el-table-column prop="username" label="用户名称"></el-table-column>
+      <el-table-column prop="email" label="用户邮箱"></el-table-column>
       <el-table-column prop="created" label="创建时间">
         <template #default="scope">
           <span>{{ timeFormat(scope.row.created) }}</span>
@@ -59,16 +67,17 @@
 </template>
 
 <script>
-import { defineComponent, inject, onMounted, reactive, ref } from 'vue'
+import { computed, defineComponent, inject, onMounted, reactive, ref } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { addAdmin, delAdmin, putAdmin, getAdmin } from '../../api/user'
 
 export default defineComponent({
   setup() {
     const dialogVisible = ref(false) // 弹窗
-    const adminLinkList = ref([]) // 账号列表
+    const adminLinkList = ref([]) // 用户列表
     const loading = ref(false) // 是否显示加载中
-    const adminTitle = ref('添加账号')
+    const adminTitle = ref('添加用户')
+    const isDisabled = ref(false)
     const adminForm = reactive({
       _id: null,
       username: '',
@@ -85,7 +94,7 @@ export default defineComponent({
         { min: 3, max: 20, message: '长度在 3 到 20 个字符' },
         {
           pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
-          message: '请正确使用邮箱账号',
+          message: '请正确使用邮箱用户',
         },
       ],
       password: [
@@ -109,19 +118,28 @@ export default defineComponent({
             const res = await putAdmin(adminForm._id, adminForm)
             if (res.code === 200) {
               ElMessage({
-                type: 'info',
-                message: res.msg,
-              })
-            }
-          } else {
-            const res = await addAdmin(adminForm)
-            if (res.code === 200) {
-              ElMessage({
                 type: 'success',
                 message: res.msg,
               })
             }
+          } else {
+            try {
+              const res = await addAdmin(adminForm)
+              if (res.code === 200) {
+                ElMessage({
+                  type: 'success',
+                  message: res.msg,
+                })
+              }
+            } catch (error) {
+              ElMessage({
+                type: 'warning',
+                message: '用户已存在',
+              })
+              return false
+            }
           }
+          adminFormRef.value.resetFields()
           // 关闭对话框
           dialogVisible.value = false
           getAdminList()
@@ -132,7 +150,7 @@ export default defineComponent({
     }
     // 删
     const deleteRow = ({ _id }) => {
-      ElMessageBox.confirm('此操作将永久删除该账号, 是否继续?', '提示', {
+      ElMessageBox.confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -143,7 +161,7 @@ export default defineComponent({
           if (res.code === 200) {
             ElMessage({
               type: 'success',
-              message: '删除账号成功!',
+              message: '删除用户成功!',
             })
           }
           getAdminList()
@@ -157,9 +175,13 @@ export default defineComponent({
     }
     // 增打开对话框并重置
     const createToollink = () => {
+      if (adminFormRef.value) {
+        adminFormRef.value.resetFields()
+      }
       dialogVisible.value = true
-      adminTitle.value = '添加账号'
+      adminTitle.value = '添加用户'
       adminForm._id = null
+      adminForm.email = ''
       adminForm.username = ''
       adminForm.password = ''
     }
@@ -168,13 +190,14 @@ export default defineComponent({
       dialogVisible.value = true
       if (row && row._id) {
         const adminName = row.username
-        adminTitle.value = `编辑账号：${adminName || ''}`
+        adminTitle.value = `编辑用户：${adminName || ''}`
         adminForm._id = row._id
         adminForm.username = adminName
+        adminForm.email = row.email
         adminForm.password = row.password
       }
     }
-    // 获取账号列表
+    // 获取用户列表
     const getAdminList = async () => {
       loading.value = true
       const res = await getAdmin()
@@ -190,6 +213,7 @@ export default defineComponent({
       adminForm,
       rules,
       loading,
+      isDisabled: computed(() => (adminForm._id === null ? false : true)),
       adminFormRef,
       adminTitle,
       createToollink,

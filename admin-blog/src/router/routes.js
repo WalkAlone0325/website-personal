@@ -1,19 +1,20 @@
 import Home from '../views/Home'
 import Dashbord from '../views/Dashbord/Dashbord'
 import BlankLayout from '../layout/BlankLayout'
+import Login from '../views/Login/Login'
 
 /**
  * hidden： 是否为blank页面
  * notLogin：是否需要登录
  */
 export default [
-  // {
-  //   path: '/login',
-  //   name: 'login',
-  //   component: Login,
-  //   hidden: true,
-  //   meta: { title: '登录', notLogin: true },
-  // },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    hidden: true,
+    meta: { title: '登录', notLogin: true },
+  },
   {
     path: '/',
     name: 'home',

@@ -12,7 +12,7 @@ service.interceptors.request.use(
   config => {
     let token = getStorage('accessToken')
     if (token) {
-      config.headers.Authorization = token
+      config.headers.Authorization = 'Bearer ' + token
     }
     return config
   },
@@ -31,6 +31,10 @@ service.interceptors.response.use(
     }
   },
   err => {
+    ElMessage({
+      type: 'error',
+      message: err.message,
+    })
     return Promise.reject(err)
   },
 )
