@@ -1,9 +1,11 @@
 <template>
   <div class="tagsList-page">
-    <h2>标签管理</h2>
-    <el-button style="margin-left: 20px;" type="primary" @click="createTag">
-      添加标签
-    </el-button>
+    <div class="title-content">
+      <h3>标签管理</h3>
+      <el-button size="small" style="" type="primary" @click="createTag">
+        添加标签
+      </el-button>
+    </div>
 
     <!-- dialog对话框 -->
     <el-dialog :title="tagTitle" v-model="dialogVisible" width="30%">

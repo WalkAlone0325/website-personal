@@ -1,9 +1,11 @@
 <template>
   <div class="toollinksList-page">
-    <h2>工链管理</h2>
-    <el-button style="margin-left: 20px;" type="primary" @click="createToollink">
-      添加工链
-    </el-button>
+    <div class="title-content">
+      <h3>工链管理</h3>
+      <el-button size="small" type="primary" @click="createToollink">
+        添加工链
+      </el-button>
+    </div>
 
     <!-- 添加工链 -->
     <el-dialog :title="toolTitle" v-model="dialogVisible">

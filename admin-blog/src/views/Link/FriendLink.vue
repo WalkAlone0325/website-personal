@@ -1,9 +1,11 @@
 <template>
   <div class="friendlinksList-page">
-    <h2>友链管理</h2>
-    <el-button style="margin-left: 20px;" type="primary" @click="createFriendlink">
-      添加友链
-    </el-button>
+    <div class="title-content">
+      <h3>友链管理</h3>
+      <el-button size="small" type="primary" @click="createFriendlink">
+        添加友链
+      </el-button>
+    </div>
 
     <!-- 添加友链 -->
     <el-dialog :title="friendTitle" v-model="dialogVisible">
