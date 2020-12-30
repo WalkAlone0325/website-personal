@@ -94,38 +94,9 @@ export default [
         },
       },
       {
-        path: '/table',
-        name: 'table',
-        component: () => import('../views/Table/Index.vue'),
-        redirect: '/table/list',
-        meta: { title: '表格' },
-        children: [
-          {
-            path: '/table/list',
-            name: 'tablelist',
-            component: () => import('../views/Table/List.vue'),
-            meta: { title: '简单表格' },
-          },
-          {
-            path: '/table/complex',
-            name: 'tablecomplex',
-            component: () => import('../views/Table/Complex.vue'),
-            meta: { title: '复杂表格' },
-            children: [
-              {
-                path: '/table/complex/addupdate',
-                name: 'complexaddupdate',
-                component: () => import('../views/Table/AddUpdate.vue'),
-                meta: { title: '新增编辑' },
-              },
-            ],
-          },
-        ],
-      },
-      {
         path: '/about',
         name: 'about',
-        meta: { title: '关于我们' },
+        meta: { title: '关于我们', icon: 'el-icon-s-operation' },
         component: () => import('../views/About/About.vue'),
         children: [
           {
@@ -133,7 +104,7 @@ export default [
             name: 'aboutAdd',
             hidden: true,
             component: () => import('../views/About/Add.vue'),
-            meta: { title: '创建' },
+            meta: { title: '创建', icon: 'el-icon-user-solid' },
           },
         ],
       },

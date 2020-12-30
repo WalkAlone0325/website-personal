@@ -13,10 +13,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // console.log(to, from, next)
   NProgress.start()
   const hasToken = getToken()
-  console.log(hasToken)
   if (hasToken) {
     if (to.path === '/login') {
       next({ path: '/' })

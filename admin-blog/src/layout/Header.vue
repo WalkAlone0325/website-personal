@@ -21,8 +21,8 @@
       <!-- 右侧菜单 -->
       <section class="cursor dc">
         <el-dropdown @command="handleDropLink" trigger="click">
-          <span class="el-dropdown-link">
-            {{ userInfo.account }}
+          <span class="el-dropdown-link" :title="userInfo.email">
+            {{ userInfo.username }}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <template #dropdown>
@@ -58,12 +58,6 @@ export default defineComponent({
 
     const isCollapse = computed(() => store.getters['app/isCollapse'])
 
-    // 获取用户信息
-    // userInfo.value = Utils.getCookie('DEFAULT_TOKEN')
-    //   ? JSON.parse(Utils.getCookie('DEFAULT_TOKEN'))
-    //   : {}
-    userInfo.value = getStorage() ? JSON.parse(getStorage()) : {}
-
     function collspan() {
       store.commit('app/updateCollapse', !isCollapse.value)
     }
@@ -91,7 +85,7 @@ export default defineComponent({
     }
 
     return {
-      userInfo,
+      userInfo: JSON.parse(getStorage('info')),
       isCollapse,
       collspan,
       handleDropLink,
