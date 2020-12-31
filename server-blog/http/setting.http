@@ -8,7 +8,14 @@ POST {{uri}}/setting
 Content-Type: application/json
 
 {
-  
+  "bg_img": "https://tse2-mm.cn.bing.net/th/id/OIP.t9c0r_B9qQUV2qPqXgXpfwHaCx?pid=Api&rs=1",
+  "title": "独行",
+  "desc": "小小前端开发",
+  "img_url": "http://xxx",
+  "content_info": "xxxxx",
+  "avator_img": "http://xxx",
+  "avator": "独行",
+  "info": "小小前端开发"
 }
 
 ###
@@ -21,4 +28,4 @@ Content-Type: application/json
 }
 
 ### 
-DELETE {{uri}}/setting/5fec707f9d4feb07d0bccef7
+DELETE {{uri}}/setting/5fed5e4a68850f4790a42434
