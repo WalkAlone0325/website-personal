@@ -21,7 +21,7 @@
       <!-- 右侧菜单 -->
       <section class="cursor dc">
         <el-dropdown @command="handleDropLink" trigger="click">
-          <span class="el-dropdown-link" :title="userInfo.username">
+          <span class="el-dropdown-link" :title="userInfo.username || ''">
             <img :src="userInfo.user_img" />
             <i class="el-icon-caret-bottom"></i>
           </span>
