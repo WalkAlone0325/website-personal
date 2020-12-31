@@ -137,7 +137,7 @@ router.get('/article', auth(), async ctx => {
 router.get('/article/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
-      const data = await Article.findById(ctx.params.id)
+      const data = await Article.findById(ctx.params.id).populate('tags')
       ctx.response.status = 200
       ctx.body = {
         code: 200,
