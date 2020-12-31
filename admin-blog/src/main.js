@@ -7,14 +7,22 @@ import ElementPlus from 'element-plus'
 import 'element-plus/lib/theme-chalk/index.css'
 import './assets/styles/common.scss'
 import { timeStampFormat } from './utils/filters'
-import axios from './utils/request'
+import service from './utils/request'
+import { getToken } from './utils/auth'
 
 const app = createApp(App)
 
-app.config.globalProperties.$axios = axios
+const getAuthHeader = () => {
+  return {
+    Authorization: 'Bearer ' + getToken() || '',
+  }
+}
+
+app.config.globalProperties.$axios = service
 
 app
   .provide('timeFormat', timeStampFormat)
+  .provide('getAuthHeader', getAuthHeader)
   .use(ElementPlus)
   .use(store)
   .use(router)

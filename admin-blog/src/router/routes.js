@@ -74,7 +74,7 @@ export default [
             path: '/link/friend',
             name: 'friend',
             component: () => import('../views/Link/FriendLink.vue'),
-            meta: { title: '友情链接', icon: 'el-icon-s-promotion' },
+            meta: { title: '友链-图标', icon: 'el-icon-s-promotion' },
           },
           {
             path: '/link/tool',

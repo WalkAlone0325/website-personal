@@ -22,20 +22,21 @@
         <el-form-item label="工链图标" prop="tool_imgurl">
           <el-input v-model="toolForm.tool_imgurl"></el-input>
           或
-          <!-- <el-upload
+          <el-upload
             class="avatar-uploader"
-            :action="$http.defaults.baseURL + '/upload'"
+            :action="$axios.defaults.baseURL + '/upload'"
             :show-file-list="false"
             :on-success="afterUpload"
+            :headers="getAuthHeader()"
           >
             <img
-              v-if="create.tool_imgurl"
-              :src="create.tool_imgurl"
+              v-if="toolForm.tool_imgurl"
+              :src="toolForm.tool_imgurl"
               alt="图片找不见！"
               class="avatar"
             />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload> -->
+          </el-upload>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -219,6 +220,8 @@ export default defineComponent({
         toolForm._id = row._id
         toolForm.tool_name = toolName
         toolForm.tool_desc = row.tool_desc
+        toolForm.tool_url = row.tool_url
+        toolForm.tool_imgurl = row.tool_imgurl
       }
     }
     // 获取工链列表
@@ -229,6 +232,11 @@ export default defineComponent({
         toolLinkList.value = res.data
         loading.value = false
       }
+    }
+
+    // 图片上传
+    const afterUpload = res => {
+      toolForm.tool_imgurl = res.filename
     }
 
     return {
@@ -243,7 +251,9 @@ export default defineComponent({
       handleToolLink,
       deleteRow,
       updateRow,
+      afterUpload,
       timeFormat: inject('timeFormat'),
+      getAuthHeader: inject('getAuthHeader'),
     }
   },
 })

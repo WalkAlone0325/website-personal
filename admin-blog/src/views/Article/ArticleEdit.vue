@@ -37,6 +37,7 @@
             :action="$axios.defaults.baseURL + '/upload'"
             :show-file-list="false"
             :on-success="afterUpload"
+            :headers="getAuthHeader()"
           >
             <img
               v-if="articleForm.img_url"
@@ -75,6 +76,7 @@
           :show-file-list="false"
           :on-success="mdUpload"
           list-type="picture"
+          :headers="getAuthHeader()"
         >
           <el-button type="primary">
             <i class="el-icon-picture"></i>
@@ -97,7 +99,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, inject, ref, toRefs, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTag } from '../../api/tag'
 import { getArticle, delArticle, putArticle, addArticle, getArticleItem } from '../../api/article'
@@ -298,6 +300,7 @@ export default defineComponent({
       compiledMarkdown,
       update,
       mdUpload,
+      getAuthHeader: inject('getAuthHeader'),
     }
   },
 })

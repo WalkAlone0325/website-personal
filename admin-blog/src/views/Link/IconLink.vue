@@ -1,34 +1,16 @@
 <template>
-  <div class="friendlinksList-page">
-    <div class="title-content">
-      <h3 style="display: inline-block;">友链/图标管理</h3>
-      <el-button
-        style="margin: 10px 15px 0 15px;"
-        size="small"
-        type="primary"
-        @click="createFriendlink"
-      >
-        添加友链
-      </el-button>
-      <el-button style="margin: 10px 15px 0 15px;" size="small" type="primary" @click="handleChild">
-        添加图标
-      </el-button>
-    </div>
-
-    <!-- 添加友链 -->
-    <el-dialog :title="friendTitle" v-model="dialogVisible">
-      <el-form ref="friendFormRef" :rules="rules" :model="friendForm" label-width="80px">
-        <el-form-item label="友链名称" prop="blog_name">
-          <el-input v-model="friendForm.blog_name"></el-input>
+  <div class="iconlinksList-page">
+    <!-- 添加图标 -->
+    <el-dialog :title="iconTitle" v-model="dialogVisible">
+      <el-form ref="iconFormRef" :rules="rules" :model="iconForm" label-width="80px">
+        <el-form-item label="图标名称" prop="name">
+          <el-input v-model="iconForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="友链描述" prop="blog_desc">
-          <el-input v-model="friendForm.blog_desc"></el-input>
+        <el-form-item label="图标地址" prop="link">
+          <el-input v-model="iconForm.link"></el-input>
         </el-form-item>
-        <el-form-item label="友链地址" prop="blog_url">
-          <el-input v-model="friendForm.blog_url"></el-input>
-        </el-form-item>
-        <el-form-item label="友链图标" prop="blog_imgurl">
-          <el-input v-model="friendForm.blog_imgurl"></el-input>
+        <el-form-item label="图标" prop="icon">
+          <el-input v-model="iconForm.icon"></el-input>
           或
           <el-upload
             class="avatar-uploader"
@@ -37,12 +19,7 @@
             :on-success="afterUpload"
             :headers="getAuthHeader()"
           >
-            <img
-              v-if="friendForm.blog_imgurl"
-              :src="friendForm.blog_imgurl"
-              alt="图片找不见！"
-              class="avatar"
-            />
+            <img v-if="iconForm.icon" :src="iconForm.icon" alt="图片找不见！" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -50,32 +27,26 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleFriendLink()">提 交</el-button>
+          <el-button type="primary" @click="handleIconLink()">提 交</el-button>
         </span>
       </template>
     </el-dialog>
-
-    <!-- 表格数据列表 -->
+    <!-- 添加图标链接 -->
     <el-table
-      :data="friendLinkList"
+      :data="iconList"
       v-loading="loading"
       border
-      height="280"
+      height="290"
       style="margin: 0 auto; margin-top: 20px; width: 90%"
     >
       <el-table-column type="index" width="100" label="#"></el-table-column>
-      <el-table-column prop="blog_name" label="友链名称"></el-table-column>
-      <el-table-column
-        prop="blog_desc"
-        label="描述"
-        :show-overflow-tooltip="true"
-      ></el-table-column>
-      <el-table-column prop="blog_url" label="地址"></el-table-column>
-      <el-table-column prop="blog_imgurl" label="图标">
+      <el-table-column prop="name" label="图标名称"></el-table-column>
+      <el-table-column prop="link" label="地址链接"></el-table-column>
+      <el-table-column prop="icon" label="图标">
         <template #default="scope">
           <img
-            v-if="scope.row.blog_imgurl"
-            :src="scope.row.blog_imgurl"
+            v-if="scope.row.icon"
+            :src="scope.row.icon"
             alt="图标不见了"
             style="width: 50px; height: 50px;"
           />
@@ -99,36 +70,32 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <IocnLink ref="childRef" />
   </div>
 </template>
 
 <script>
 import { defineComponent, inject, onMounted, reactive, ref } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { addFriendLink, delFriendLink, putFriendLink, getFriendLink } from '../../api/friend'
-import IocnLink from './IconLink'
+import { addIconLink, delIconLink, putIconLink, getIconLink } from '../../api/icon'
 
 export default defineComponent({
   setup() {
     const dialogVisible = ref(false) // 弹窗
-    const friendLinkList = ref([]) // 友链列表
+    const iconList = ref([]) // 图标列表
     const loading = ref(false)
-    const friendTitle = ref('添加友链')
-    const friendForm = reactive({
+    const iconTitle = ref('添加图标')
+    const iconForm = reactive({
       _id: null,
-      blog_name: '',
-      blog_desc: '',
-      blog_url: '',
-      blog_imgurl: '',
+      name: '',
+      link: '',
+      icon: '',
     })
     const rules = reactive({
-      blog_name: [
-        { required: true, message: '请输入友链名称', trigger: 'blur' },
+      name: [
+        { required: true, message: '请输入图标名称', trigger: 'blur' },
         { min: 2, max: 20, message: '长度在 2 到 20 个字符' },
       ],
-      blog_url: [
+      link: [
         {
           required: true,
           message: '请输入正确的地址',
@@ -139,7 +106,7 @@ export default defineComponent({
           message: '地址请以http或https开头字母和数字',
         },
       ],
-      blog_imgurl: [
+      icon: [
         {
           required: false,
           message: '请上传一个地址或图标',
@@ -151,8 +118,7 @@ export default defineComponent({
         },
       ],
     })
-    const friendFormRef = ref(null)
-    const childRef = ref(null)
+    const iconFormRef = ref(null)
 
     onMounted(() => {
       getLinkList()
@@ -160,12 +126,12 @@ export default defineComponent({
 
     // methods
     // 增、改
-    const handleFriendLink = () => {
-      friendFormRef.value.validate(async valid => {
+    const handleIconLink = () => {
+      iconFormRef.value.validate(async valid => {
         if (valid) {
-          if (friendForm._id !== null) {
+          if (iconForm._id !== null) {
             // 改
-            const res = await putFriendLink(friendForm._id, friendForm)
+            const res = await putIconLink(iconForm._id, iconForm)
             if (res.code === 200) {
               ElMessage({
                 type: 'info',
@@ -173,7 +139,7 @@ export default defineComponent({
               })
             }
           } else {
-            const res = await addFriendLink(friendForm)
+            const res = await addIconLink(iconForm)
             if (res.code === 200) {
               ElMessage({
                 type: 'success',
@@ -191,18 +157,18 @@ export default defineComponent({
     }
     // 删
     const deleteRow = ({ _id }) => {
-      ElMessageBox.confirm('此操作将永久删除该友链, 是否继续?', '提示', {
+      ElMessageBox.confirm('此操作将永久删除该图标, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(async () => {
           // 发送请求
-          const res = await delFriendLink(_id)
+          const res = await delIconLink(_id)
           if (res.code === 200) {
             ElMessage({
               type: 'success',
-              message: '删除友链成功!',
+              message: '删除图标成功!',
             })
           }
           getLinkList()
@@ -215,70 +181,58 @@ export default defineComponent({
         })
     }
     // 增打开对话框并重置
-    const createFriendlink = () => {
+    const createIconlink = () => {
       dialogVisible.value = true
-      friendTitle.value = '添加友链'
-      friendForm._id = null
-      friendForm.blog_name = ''
-      friendForm.blog_desc = ''
-      friendForm.blog_url = ''
-      friendForm.blog_imgurl = ''
+      iconTitle.value = '添加图标'
+      iconForm._id = null
+      iconForm.name = ''
+      iconForm.link = ''
+      iconForm.icon = ''
     }
     // 改打开对话框并赋值
     const updateRow = row => {
       dialogVisible.value = true
       if (row && row._id) {
-        const blogName = row.blog_name
-        friendTitle.value = `编辑友链：${blogName || ''}`
-        friendForm._id = row._id
-        friendForm.blog_name = blogName
-        friendForm.blog_desc = row.blog_desc
-        friendForm.blog_url = row.blog_url
-        friendForm.blog_imgurl = row.blog_imgurl
+        const blogName = row.name
+        iconTitle.value = `编辑图标：${blogName || ''}`
+        iconForm._id = row._id
+        iconForm.name = blogName
+        iconForm.icon = row.icon
+        iconForm.link = row.link
       }
     }
-    // 获取友链列表
+    // 获取图标列表
     const getLinkList = async () => {
       loading.value = true
-      const res = await getFriendLink()
+      const res = await getIconLink()
       if (res.code === 200) {
-        friendLinkList.value = res.data
+        iconList.value = res.data
         loading.value = false
-      }
-    }
-
-    // 调用子组件方法
-    const handleChild = () => {
-      if (childRef.value) {
-        childRef.value.createIconlink()
       }
     }
 
     // 图片上传
     const afterUpload = res => {
-      friendForm.blog_imgurl = res.filename
+      iconForm.icon = res.filename
     }
 
     return {
       dialogVisible,
-      friendLinkList,
-      friendForm,
+      iconList,
+      iconForm,
       rules,
       loading,
-      friendFormRef,
-      friendTitle,
-      createFriendlink,
-      handleFriendLink,
+      iconFormRef,
+      iconTitle,
+      createIconlink,
+      handleIconLink,
       deleteRow,
       updateRow,
       timeFormat: inject('timeFormat'),
-      getAuthHeader: inject('getAuthHeader'),
-      childRef,
-      handleChild,
       afterUpload,
+      getAuthHeader: inject('getAuthHeader'),
     }
   },
-  components: { IocnLink },
 })
 </script>
 

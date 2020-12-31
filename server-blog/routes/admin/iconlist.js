@@ -7,7 +7,7 @@ const Setting = require('../../models/Setting')
 const IconList = require('../../models/IconList')
 
 // 增
-router.post('/iconlist', async ctx => {
+router.post('/iconlist', auth(), async ctx => {
   if (ctx.request.body) {
     try {
       console.log(ctx.request.body)
@@ -37,7 +37,7 @@ router.post('/iconlist', async ctx => {
 })
 
 // 删
-router.delete('/iconlist/:id', async ctx => {
+router.delete('/iconlist/:id', auth(), async ctx => {
   if (ctx.params.id) {
     try {
       const data = await IconList.findByIdAndDelete(ctx.params.id)
@@ -65,7 +65,7 @@ router.delete('/iconlist/:id', async ctx => {
 })
 
 // 改
-router.put('/iconlist/:id', async ctx => {
+router.put('/iconlist/:id', auth(), async ctx => {
   if (ctx.params.id && ctx.request.body) {
     try {
       const data = await IconList.findByIdAndUpdate(ctx.params.id, ctx.request.body)
@@ -93,7 +93,7 @@ router.put('/iconlist/:id', async ctx => {
 })
 
 // 查
-router.get('/iconlist', async ctx => {
+router.get('/iconlist', auth(), async ctx => {
   try {
     const data = await IconList.find()
     ctx.response.status = 200
