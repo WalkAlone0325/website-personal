@@ -8,6 +8,8 @@ const logger = require('koa-logger')
 const cors = require('koa-cors')
 require('./config/db')(app)
 
+const web = require('./routes/web/index')
+
 // error handler
 onerror(app)
 
@@ -20,6 +22,7 @@ app.use(
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
+app.use(require('koa-static')(__dirname + '/web'))
 app.use(cors())
 
 app.use(
@@ -38,7 +41,7 @@ app.use(async (ctx, next) => {
 
 // routes
 require('./routes/admin/index')(app)
-// app.use(web.routes(), web.allowedMethods())
+app.use(web.routes(), web.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
