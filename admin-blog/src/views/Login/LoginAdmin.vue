@@ -27,6 +27,25 @@
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
+        <el-form-item label="头像" prop="user_img">
+          <el-input v-model="adminForm.user_img" placeholder="请上传头像"></el-input>
+          或
+          <el-upload
+            class="avatar-uploader"
+            :action="$axios.defaults.baseURL + '/upload'"
+            :show-file-list="false"
+            :on-success="afterUpload"
+            :headers="getAuthHeader()"
+          >
+            <img
+              v-if="adminForm.user_img"
+              :src="adminForm.user_img"
+              alt="图片找不见！"
+              class="avatar"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -45,6 +64,17 @@
     >
       <el-table-column type="index" width="100" label="#"></el-table-column>
       <el-table-column prop="username" label="用户名称"></el-table-column>
+      <el-table-column prop="user_img" label="头像">
+        <template #default="scope">
+          <img
+            v-if="scope.row.user_img"
+            :src="scope.row.user_img"
+            alt="图标不见了"
+            style="width: 50px; height: 50px;"
+          />
+          <span v-else>没有图标</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="email" label="用户邮箱"></el-table-column>
       <el-table-column prop="created" label="创建时间">
         <template #default="scope">
@@ -83,6 +113,7 @@ export default defineComponent({
       username: '',
       email: '',
       password: '',
+      user_img: '',
     })
     const rules = reactive({
       username: [
@@ -100,6 +131,17 @@ export default defineComponent({
       password: [
         { required: true, message: '请输入账户密码', trigger: 'blur' },
         { min: 3, max: 16, message: '长度在 3 到 16 个字符' },
+      ],
+      user_img: [
+        {
+          required: false,
+          message: '请上传头像',
+          trigger: 'blur',
+        },
+        {
+          pattern: /https?:\/{2}[^\s]*/,
+          message: '地址请以http或https开头字母和数字',
+        },
       ],
     })
     const adminFormRef = ref(null)
@@ -184,6 +226,7 @@ export default defineComponent({
       adminForm.email = ''
       adminForm.username = ''
       adminForm.password = ''
+      adminForm.user_img = ''
     }
     // 改打开对话框并赋值
     const updateRow = row => {
@@ -195,6 +238,7 @@ export default defineComponent({
         adminForm.username = adminName
         adminForm.email = row.email
         adminForm.password = row.password
+        adminForm.user_img = row.user_img
       }
     }
     // 获取用户列表
@@ -205,6 +249,11 @@ export default defineComponent({
         adminLinkList.value = res.data
         loading.value = false
       }
+    }
+
+    // 图片上传
+    const afterUpload = res => {
+      adminForm.user_img = res.filename
     }
 
     return {
@@ -221,6 +270,8 @@ export default defineComponent({
       deleteRow,
       updateRow,
       timeFormat: inject('timeFormat'),
+      afterUpload,
+      getAuthHeader: inject('getAuthHeader'),
     }
   },
 })

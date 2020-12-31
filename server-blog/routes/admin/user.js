@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const auth = require('../../middleware/auth')
 
 const AdminUser = require('../../models/AdminUser')
+const Setting = require('../../models/Setting')
 
 // 增
 router.post('/admin', auth(), async ctx => {
@@ -138,6 +139,7 @@ router.post('/login', async ctx => {
           data: {
             email: user.email,
             username: user.username,
+            user_img: user.user_img,
           },
           token,
         }

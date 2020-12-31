@@ -4,6 +4,7 @@ const schema = new mongoose.Schema(
   {
     username: { type: String, default: '独行' },
     email: { type: String },
+    user_img: { type: String },
     password: {
       type: String,
       select: false,

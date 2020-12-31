@@ -21,9 +21,9 @@
       <!-- 右侧菜单 -->
       <section class="cursor dc">
         <el-dropdown @command="handleDropLink" trigger="click">
-          <span class="el-dropdown-link" :title="userInfo.email">
-            {{ userInfo.username }}
-            <i class="el-icon-arrow-down el-icon--right"></i>
+          <span class="el-dropdown-link" :title="userInfo.username">
+            <img :src="userInfo.user_img" />
+            <i class="el-icon-caret-bottom"></i>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
@@ -168,6 +168,19 @@ export default defineComponent({
           background-color: #eee;
         }
       }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.el-dropdown {
+  .el-dropdown-link {
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 6px;
     }
   }
 }
